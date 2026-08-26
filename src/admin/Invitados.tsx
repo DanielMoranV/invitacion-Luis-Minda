@@ -16,6 +16,8 @@ const ESTADOS: Record<Estado, string> = {
 const sinTildes = (s: string) =>
   s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
+const SIN_GRUPO = '(sin grupo)';
+
 const fechaCorta = (d: Date | null) =>
   d ? d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' }) : '';
 
@@ -41,7 +43,8 @@ export function Invitados() {
   const [filtroEstado, setFiltroEstado] = useState<'todos' | Estado>('todos');
   const [filtroGrupo, setFiltroGrupo] = useState('todos');
   const [soloSinEnviar, setSoloSinEnviar] = useState(false);
-  const [abierto, setAbierto] = useState<string | null>(null);
+  const [filaAbierta, setFilaAbierta] = useState<string | null>(null);
+  const [gruposAbiertos, setGruposAbiertos] = useState<Set<string>>(new Set());
   const [mostrarAlta, setMostrarAlta] = useState(false);
   const [mostrarImportar, setMostrarImportar] = useState(false);
 
@@ -61,21 +64,48 @@ export function Invitados() {
     [],
   );
 
-  const grupos = useMemo(
-    () => [...new Set(lista.map((i) => i.grupo).filter(Boolean))].sort() as string[],
-    [lista],
-  );
+  const grupos = useMemo(() => {
+    const nombrados = [...new Set(lista.map((i) => i.grupo).filter(Boolean))].sort() as string[];
+    return lista.some((i) => !i.grupo) ? [...nombrados, SIN_GRUPO] : nombrados;
+  }, [lista]);
 
   const visibles = useMemo(() => {
     const q = sinTildes(busqueda.trim());
     return lista.filter((i) => {
       if (filtroEstado !== 'todos' && i.estado !== filtroEstado) return false;
-      if (filtroGrupo !== 'todos' && i.grupo !== filtroGrupo) return false;
+      if (filtroGrupo === SIN_GRUPO ? i.grupo != null : filtroGrupo !== 'todos' && i.grupo !== filtroGrupo) return false;
       if (soloSinEnviar && i.envios > 0) return false;
       if (!q) return true;
       return sinTildes(i.nombre).includes(q) || sinTildes(i.grupo ?? '').includes(q);
     });
   }, [lista, busqueda, filtroEstado, filtroGrupo, soloSinEnviar]);
+
+  // Agrupadas para que 400 invitaciones sean navegables: una sección
+  // colapsable por `grupo`, con su propio conteo, en vez de una lista plana.
+  const porGrupo = useMemo(() => {
+    const mapa = new Map<string, Invitado[]>();
+    for (const inv of visibles) {
+      const clave = inv.grupo || SIN_GRUPO;
+      (mapa.get(clave) ?? mapa.set(clave, []).get(clave)!).push(inv);
+    }
+    return [...mapa.entries()].sort(([a], [b]) => {
+      if (a === SIN_GRUPO) return 1;
+      if (b === SIN_GRUPO) return -1;
+      return a.localeCompare(b, 'es');
+    });
+  }, [visibles]);
+
+  // Con búsqueda o filtro activo no tiene sentido que el usuario tenga que
+  // abrir cada grupo a mano para ver sus propios resultados.
+  const filtrosActivos =
+    busqueda.trim() !== '' || filtroEstado !== 'todos' || filtroGrupo !== 'todos' || soloSinEnviar;
+
+  const alternarGrupo = (g: string) =>
+    setGruposAbiertos((prev) => {
+      const siguiente = new Set(prev);
+      if (siguiente.has(g)) siguiente.delete(g); else siguiente.add(g);
+      return siguiente;
+    });
 
   const resumen = useMemo(() => {
     const conf = lista.filter((i) => i.estado === 'confirmado');
@@ -138,6 +168,18 @@ export function Invitados() {
           />
           Sin enviar
         </label>
+        {!filtrosActivos && porGrupo.length > 1 && (
+          <button
+            class="btn btn--pequeno btn--fantasma"
+            onClick={() =>
+              setGruposAbiertos((prev) =>
+                prev.size === porGrupo.length ? new Set() : new Set(porGrupo.map(([g]) => g)),
+              )
+            }
+          >
+            {gruposAbiertos.size === porGrupo.length ? 'Colapsar todo' : 'Expandir todo'}
+          </button>
+        )}
         <button class="btn" onClick={() => { setMostrarImportar(true); setMostrarAlta(false); }}>
           Importar lista
         </button>
@@ -170,17 +212,52 @@ export function Invitados() {
             {visibles.length === lista.length
               ? `${lista.length} invitaciones`
               : `${visibles.length} de ${lista.length}`}
+            {porGrupo.length > 1 && ` · ${porGrupo.length} grupos`}
           </p>
-          <ul class="filas">
-            {visibles.map((inv) => (
-              <Fila
-                key={inv.slug}
-                inv={inv}
-                abierto={abierto === inv.slug}
-                alAlternar={() => setAbierto(abierto === inv.slug ? null : inv.slug)}
-              />
-            ))}
-          </ul>
+          <div class="grupos">
+            {porGrupo.map(([grupo, items]) => {
+              const abierto = filtrosActivos || porGrupo.length === 1 || gruposAbiertos.has(grupo);
+              const confirmados = items.filter((i) => i.estado === 'confirmado').length;
+              const pendientes = items.filter((i) => i.estado === 'pendiente').length;
+              const sinEnviar = items.filter((i) => i.envios === 0).length;
+              return (
+                <section class="grupo" key={grupo}>
+                  {porGrupo.length > 1 && (
+                    <button
+                      class="grupo__cabecera"
+                      onClick={() => alternarGrupo(grupo)}
+                      aria-expanded={abierto}
+                    >
+                      <span class="grupo__flecha" aria-hidden="true">{abierto ? '▾' : '▸'}</span>
+                      <span class="grupo__nombre">{grupo}</span>
+                      <span class="grupo__cifras">
+                        <span class="grupo__total">{items.length}</span>
+                        {confirmados > 0 && (
+                          <span class="grupo__mini grupo__mini--ok">{confirmados} conf.</span>
+                        )}
+                        {pendientes > 0 && <span class="grupo__mini">{pendientes} pend.</span>}
+                        {sinEnviar > 0 && (
+                          <span class="grupo__mini grupo__mini--alerta">{sinEnviar} sin enviar</span>
+                        )}
+                      </span>
+                    </button>
+                  )}
+                  {abierto && (
+                    <ul class="filas">
+                      {items.map((inv) => (
+                        <Fila
+                          key={inv.slug}
+                          inv={inv}
+                          abierto={filaAbierta === inv.slug}
+                          alAlternar={() => setFilaAbierta(filaAbierta === inv.slug ? null : inv.slug)}
+                        />
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              );
+            })}
+          </div>
         </>
       )}
     </div>

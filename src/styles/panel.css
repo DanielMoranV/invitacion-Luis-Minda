@@ -205,6 +205,52 @@
 
 .conteo { margin: 0 0 8px; font-size: 13px; color: var(--tenue); }
 
+/* ── Grupos ─────────────────────────────────────────────── */
+
+.grupos { display: grid; gap: 8px; }
+
+.grupo {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.grupo__cabecera {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border: 0;
+  background: #f8f9fb;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 500;
+}
+.grupo__cabecera:hover { background: #eef1f6; }
+
+.grupo__flecha { color: var(--tenue); font-size: 11px; width: 1em; flex: none; }
+.grupo__nombre { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+
+.grupo__cifras { display: flex; align-items: center; gap: 8px; font-weight: 400; }
+.grupo__total {
+  font-size: 12px;
+  color: var(--tenue);
+  font-variant-numeric: tabular-nums;
+}
+.grupo__mini {
+  font-size: 11px;
+  color: var(--tenue);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.grupo__mini--ok { color: var(--ok); }
+.grupo__mini--alerta { color: var(--alerta); }
+
+.grupo__cabecera + .filas { margin-top: 8px; padding: 0 8px 8px; }
+.grupo > .filas:first-child { padding: 8px; }
+
 /* ── Filas ──────────────────────────────────────────────── */
 
 .filas { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }

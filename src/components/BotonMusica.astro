@@ -1,0 +1,148 @@
+---
+import evento from '../content/evento.json';
+// Nunca autoplay: los navegadores lo bloquean y además es intrusivo.
+const { cancion } = evento;
+---
+
+<div class="musica">
+  <button
+    type="button"
+    class="musica__boton"
+    data-musica
+    aria-pressed="false"
+    aria-label={`Reproducir ${cancion.artista} — ${cancion.titulo}`}
+  >
+    <span class="musica__punto" aria-hidden="true"></span>
+    <span data-musica-texto>nuestra canción</span>
+  </button>
+
+  <!-- preload="none": son 3.8 MB, no se tocan hasta que alguien pulse. -->
+  <audio
+    data-musica-audio
+    data-inicio={cancion.inicioSegundos}
+    src={cancion.archivo}
+    preload="none"></audio>
+</div>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('[data-musica]');
+  const audio = document.querySelector<HTMLAudioElement>('[data-musica-audio]');
+  const texto = document.querySelector<HTMLElement>('[data-musica-texto]');
+
+  if (boton && audio && texto) {
+    const inicio = Number(audio.dataset.inicio ?? 0);
+
+    const pintar = (sonando: boolean) => {
+      boton.classList.toggle('musica__boton--activo', sonando);
+      boton.setAttribute('aria-pressed', String(sonando));
+      texto.textContent = sonando ? 'sonando' : 'nuestra canción';
+    };
+
+    /**
+     * Con preload="none" no hay duración hasta que carguen los metadatos.
+     * El plazo máximo evita que el botón se quede colgado sin dar señal si la
+     * red va lenta o el navegador nunca decodifica el archivo.
+     */
+    const conMetadatos = () =>
+      audio.readyState >= 1
+        ? Promise.resolve()
+        : new Promise<void>((resolver, rechazar) => {
+            const plazo = setTimeout(() => {
+              limpiar();
+              rechazar(new Error('tiempo agotado'));
+            }, 12000);
+
+            const listo = () => { limpiar(); resolver(); };
+            const fallo = () => { limpiar(); rechazar(new Error('audio')); };
+            function limpiar() {
+              clearTimeout(plazo);
+              audio.removeEventListener('loadedmetadata', listo);
+              audio.removeEventListener('error', fallo);
+            }
+
+            audio.addEventListener('loadedmetadata', listo);
+            audio.addEventListener('error', fallo);
+            audio.load();
+          });
+
+    const irAlInicio = () => {
+      if (Number.isFinite(audio.duration) && inicio < audio.duration) {
+        audio.currentTime = inicio;
+      }
+    };
+
+    boton.addEventListener('click', async () => {
+      if (!audio.paused) {
+        audio.pause();
+        return;
+      }
+
+      try {
+        if (audio.readyState < 1) texto.textContent = 'cargando…';
+        await conMetadatos();
+        // Solo saltamos al inicio la primera vez: si alguien pausó a mitad
+        // de la canción, al retomar debe seguir donde iba.
+        if (audio.currentTime < inicio) irAlInicio();
+        await audio.play();
+        pintar(true);
+      } catch {
+        texto.textContent = 'no disponible';
+        boton.disabled = true;
+      }
+    });
+
+    // Bucle manual: `loop` volvería al segundo 0 y se perdería la entrada.
+    audio.addEventListener('ended', () => {
+      irAlInicio();
+      audio.play().catch(() => pintar(false));
+    });
+
+    audio.addEventListener('play', () => pintar(true));
+    audio.addEventListener('pause', () => pintar(false));
+  }
+</script>
+
+<style>
+  .musica {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    max-width: var(--ancho);
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 20px;
+    pointer-events: none;
+  }
+
+  .musica__boton {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 15px;
+    border: 1px solid rgba(168, 205, 232, .5);
+    border-radius: 999px;
+    background: rgba(20, 38, 78, .90);
+    backdrop-filter: blur(6px);
+    color: var(--sobre-foto);
+    font-family: var(--display);
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+  }
+  .musica__boton[disabled] { opacity: .5; cursor: default; }
+
+  .musica__punto {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(246, 241, 232, .35);
+    transition: background .3s ease;
+  }
+  .musica__boton--activo .musica__punto { background: var(--oro-suave); }
+</style>

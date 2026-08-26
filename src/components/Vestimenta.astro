@@ -1,0 +1,85 @@
+---
+import evento from '../content/evento.json';
+const { vestimenta } = evento;
+---
+
+<section class="vestimenta">
+  <div data-reveal>
+    <h2 class="eyebrow vestimenta__titulo">Vestimenta</h2>
+    <p class="vestimenta__codigo">{vestimenta.codigo}</p>
+    <p class="vestimenta__texto">{vestimenta.texto}</p>
+
+    <ul class="vestimenta__paleta">
+      {
+        vestimenta.evitar.map((c) => (
+          <li class="vestimenta__color">
+            <span class="vestimenta__muestra" style={`background: ${c.hex}`} aria-hidden="true">
+              <span class="vestimenta__tache" aria-hidden="true" />
+            </span>
+            <span class="vestimenta__nombre">{c.nombre}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    {vestimenta.nota && <p class="nota-pendiente">{vestimenta.nota}</p>}
+  </div>
+</section>
+
+<style>
+  .vestimenta { padding: 58px 26px; background: var(--crema-alt); text-align: center; }
+  .vestimenta__titulo { margin-bottom: 10px; font-size: 13px; }
+
+  .vestimenta__codigo {
+    margin: 0 0 10px;
+    font-family: var(--display);
+    font-size: 25px;
+    color: var(--tinta);
+  }
+
+  .vestimenta__texto {
+    margin: 0 auto;
+    max-width: 28ch;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--tinta-media);
+  }
+
+  /* Seis muestras: dos filas de tres en pantallas angostas. */
+  .vestimenta__paleta {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 12px;
+    justify-items: center;
+  }
+
+  .vestimenta__color { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+
+  .vestimenta__muestra {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgba(27, 37, 64, .14);
+    display: grid;
+    place-items: center;
+  }
+
+  /* La barra deja claro que son colores a evitar, no sugeridos. */
+  .vestimenta__tache {
+    width: 100%;
+    height: 1px;
+    background: rgba(27, 37, 64, .55);
+    transform: rotate(-45deg);
+  }
+
+  .vestimenta__nombre {
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+  }
+</style>

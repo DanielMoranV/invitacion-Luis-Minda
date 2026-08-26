@@ -1,0 +1,92 @@
+---
+import evento from '../content/evento.json';
+const { fecha } = evento;
+
+const unidades = [
+  { clave: 'd', etiqueta: 'días' },
+  { clave: 'h', etiqueta: 'horas' },
+  { clave: 'm', etiqueta: 'min' },
+  { clave: 's', etiqueta: 'seg' },
+];
+---
+
+<section class="cuenta">
+  <p class="eyebrow cuenta__titulo" data-reveal>Faltan</p>
+  <div class="cuenta__rejilla" data-reveal data-cuenta={fecha.iso}>
+    {
+      unidades.map((u) => (
+        <div class="cuenta__celda">
+          <span class="cuenta__numero" data-unidad={u.clave}>—</span>
+          <span class="cuenta__etiqueta">{u.etiqueta}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  const rejilla = document.querySelector<HTMLElement>('[data-cuenta]');
+
+  if (rejilla) {
+    const objetivo = new Date(rejilla.dataset.cuenta!).getTime();
+    const campos = {
+      d: rejilla.querySelector<HTMLElement>('[data-unidad="d"]')!,
+      h: rejilla.querySelector<HTMLElement>('[data-unidad="h"]')!,
+      m: rejilla.querySelector<HTMLElement>('[data-unidad="m"]')!,
+      s: rejilla.querySelector<HTMLElement>('[data-unidad="s"]')!,
+    };
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    const pintar = () => {
+      const restante = Math.max(0, objetivo - Date.now());
+      const seg = Math.floor(restante / 1000);
+      campos.d.textContent = String(Math.floor(seg / 86400));
+      campos.h.textContent = pad(Math.floor(seg / 3600) % 24);
+      campos.m.textContent = pad(Math.floor(seg / 60) % 60);
+      campos.s.textContent = pad(seg % 60);
+      return restante;
+    };
+
+    if (pintar() > 0) {
+      const id = setInterval(() => {
+        if (pintar() === 0) clearInterval(id);
+      }, 1000);
+    }
+  }
+</script>
+
+<style>
+  .cuenta { padding: 54px 26px 58px; background: var(--crema); text-align: center; }
+  .cuenta__titulo { letter-spacing: .36em; }
+
+  .cuenta__rejilla {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 26px;
+  }
+
+  .cuenta__celda {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 4px;
+    border: 1px solid var(--linea);
+  }
+
+  .cuenta__numero {
+    font-family: var(--display);
+    font-size: 30px;
+    line-height: 1;
+    color: var(--tinta);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cuenta__etiqueta {
+    font-size: 11px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--tinta-suave);
+  }
+</style>

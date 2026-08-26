@@ -1,0 +1,79 @@
+---
+import CapasFoto from './CapasFoto.astro';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  texto: string;
+  cita: string;
+  version: string | null;
+  velo: string;
+  posicion?: string;
+  /** "destacado" lleva comilla y filete; "divisor" es más sobrio. */
+  variante?: 'destacado' | 'divisor';
+}
+
+const {
+  src, alt, texto, cita, version, velo,
+  posicion = '50% 50%',
+  variante = 'divisor',
+} = Astro.props;
+
+const destacado = variante === 'destacado';
+---
+
+<section class={`foto-fondo versiculo ${destacado ? 'versiculo--destacado' : ''}`}>
+  <CapasFoto src={src} alt={alt} velo={velo} posicion={posicion} />
+  <div data-reveal>
+    {destacado && <p class="versiculo__comilla" aria-hidden="true">“</p>}
+    <p class={destacado ? 'versiculo__texto versiculo__texto--grande' : 'versiculo__texto'}>
+      {destacado ? texto : `«${texto}»`}
+    </p>
+    {destacado && <span class="versiculo__filete" aria-hidden="true"></span>}
+    <p class="cita versiculo__cita">{version ? `${cita} · ${version}` : cita}</p>
+  </div>
+</section>
+
+<style>
+  .versiculo {
+    padding: 62px 30px;
+    color: var(--sobre-foto);
+    text-align: center;
+  }
+  .versiculo--destacado { padding: 84px 30px; }
+
+  .versiculo__comilla {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 46px;
+    line-height: .6;
+    color: rgba(168, 205, 232, .7);
+  }
+
+  .versiculo__texto {
+    margin: 0 auto;
+    max-width: 24ch;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.6;
+  }
+
+  .versiculo__texto--grande {
+    margin-top: 18px;
+    max-width: 26ch;
+    font-size: 21px;
+    line-height: 1.58;
+  }
+
+  .versiculo__filete {
+    display: block;
+    width: 46px;
+    height: 1px;
+    background: rgba(168, 205, 232, .8);
+    margin: 24px auto 0;
+  }
+
+  .versiculo__cita { margin-top: 12px; }
+  .versiculo--destacado .versiculo__cita { margin-top: 14px; }
+</style>

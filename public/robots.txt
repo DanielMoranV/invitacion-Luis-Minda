@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /$
+# Los enlaces personalizados llevan nombres de invitados: no se indexan.
+Disallow: /i/

@@ -1,0 +1,75 @@
+---
+import CapasFoto from './CapasFoto.astro';
+import { fotos } from '../fotos';
+import evento from '../content/evento.json';
+const { versiculos, novios, fecha } = evento;
+---
+
+<section class="foto-fondo cierre">
+  <CapasFoto
+    src={fotos.manosNucaBlancoNegro}
+    alt="Minda abrazando a Luis, en blanco y negro"
+    velo="var(--velo-cierre)"
+    posicion="50% 30%"
+  />
+  <div data-reveal>
+    <p class="cierre__gracias">gracias</p>
+    <p class="cierre__sub">por acompañarnos</p>
+    <span class="cierre__filete" aria-hidden="true"></span>
+    <p class="cierre__versiculo">«{versiculos.cierre.texto}»</p>
+    <p class="cita cierre__cita">{versiculos.version ? `${versiculos.cierre.cita} · ${versiculos.version}` : versiculos.cierre.cita}</p>
+    <p class="cierre__firma">{novios.iniciales} · {fecha.compacta}</p>
+  </div>
+</section>
+
+<style>
+  .cierre {
+    padding: 96px 30px 100px;
+    color: var(--sobre-foto);
+    text-align: center;
+  }
+
+  .cierre__gracias {
+    margin: 0;
+    font-family: var(--script);
+    font-size: 46px;
+    line-height: 1;
+    color: var(--sobre-foto);
+  }
+
+  .cierre__sub {
+    margin: 14px 0 0;
+    font-family: var(--display);
+    font-size: 12px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--sobre-foto-80);
+  }
+
+  .cierre__filete {
+    display: block;
+    width: 46px;
+    height: 1px;
+    background: rgba(168, 205, 232, .8);
+    margin: 30px auto;
+  }
+
+  .cierre__versiculo {
+    margin: 0 auto;
+    max-width: 24ch;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.55;
+    color: rgba(246, 241, 232, .9);
+  }
+
+  .cierre__cita { margin-top: 10px; }
+
+  .cierre__firma {
+    margin: 42px 0 0;
+    font-family: var(--display);
+    font-size: 15px;
+    letter-spacing: .18em;
+    color: rgba(246, 241, 232, .7);
+  }
+</style>

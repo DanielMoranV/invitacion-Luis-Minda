@@ -1,0 +1,22 @@
+---
+import '../styles/panel.css';
+import { Panel } from '../admin/Panel';
+
+// El panel es una SPA tras autenticación: no necesita SEO ni prerender de
+// contenido. Se monta entero en el cliente.
+---
+
+<!doctype html>
+<html lang="es-PE">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel de invitados — Luis &amp; Minda</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#f4f2ee" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <Panel client:only="preact" />
+  </body>
+</html>

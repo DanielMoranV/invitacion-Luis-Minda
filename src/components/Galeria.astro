@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets';
+import { galeria } from '../fotos';
+---
+
+<section class="galeria">
+  <h2 class="eyebrow galeria__titulo" data-reveal>Galería</h2>
+
+  <ul class="galeria__carril">
+    {
+      galeria.map((f) => (
+        <li class="galeria__item">
+          <Image
+            src={f.src}
+            alt={f.alt}
+            widths={[284, 568, 852]}
+            sizes="66vw"
+            loading="lazy"
+            class="galeria__foto"
+          />
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="galeria__pista">desliza →</p>
+</section>
+
+<style>
+  .galeria { padding: 58px 0; background: var(--crema); }
+  .galeria__titulo { margin: 0 26px 24px; text-align: center; font-size: 13px; }
+
+  .galeria__carril {
+    list-style: none;
+    margin: 0;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 0 26px 12px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .galeria__carril::-webkit-scrollbar { display: none; }
+
+  .galeria__item { flex: 0 0 66%; scroll-snap-align: center; }
+
+  .galeria__foto {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+
+  .galeria__pista {
+    margin: 14px 26px 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--tinta-tenue);
+  }
+</style>

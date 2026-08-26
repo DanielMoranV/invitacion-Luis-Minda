@@ -1,0 +1,90 @@
+{
+  "_nota": "SUPERADO — la fuente de verdad es src/content/evento.json. Este archivo se conserva solo por las notas de _verificar.",
+  "_pais": "Perú — Monte Sullón, Catacaos, Piura",
+  "novios": {
+    "novio": {
+      "nombre": "Luis Angel Moran Vilchez",
+      "corto": "Luis"
+    },
+    "novia": {
+      "nombre": "Minda Loren Martinez Zapata",
+      "corto": "Minda"
+    },
+    "display": null
+  },
+  "fecha": {
+    "dia": "2027-01-30",
+    "horaCeremonia": "16:00",
+    "horaRecepcion": null,
+    "limiteConfirmacion": null,
+    "diaSemana": "sábado"
+  },
+  "padres": {
+    "novio": [
+      "Angel Moran Castro",
+      "Socorro Vilchez Ipanaque"
+    ],
+    "novia": [
+      "Luis Martines Vite",
+      "Dora Zapata Sosa de Martinez"
+    ]
+  },
+  "padrinos": {
+    "titulo": "Nuestros Padrinos",
+    "nombres": [
+      "Elmer Zapata Rufino",
+      "Rebeca Martinez Zapata"
+    ]
+  },
+  "sede": {
+    "_comentario": "Ceremonia y recepción en el mismo predio: la recepción es en la parte de atrás del templo.",
+    "nombre": "Iglesia del Nazareno - Monte Sullón",
+    "direccion": "Jr. Narihualá #164, Monte Sullón",
+    "coordenadas": {
+      "lat": -5.2783243,
+      "lng": -80.6816663
+    },
+    "mapsUrl": "https://maps.app.goo.gl/S3yugUFqNzPZ8K5SA",
+    "recepcion": {
+      "descripcion": "Parte de atrás del templo",
+      "coordenadas": {
+        "lat": -5.2787533,
+        "lng": -80.6807717
+      },
+      "mapsUrl": "https://maps.app.goo.gl/sKtmBWjNpJXD2QSY9"
+    },
+    "streetView": "https://maps.app.goo.gl/WfC3BE9ZbvaNU1Em8"
+  },
+  "pastor": null,
+  "itinerario": null,
+  "brindisConAlcohol": false,
+  "vals": null,
+  "niños": null,
+  "versiculos": {
+    "version": null,
+    "principal": null,
+    "secundarios": []
+  },
+  "invitados": {
+    "totalAproximado": 400,
+    "unidad": null,
+    "porFamilia": null
+  },
+  "regalos": {
+    "modo": null,
+    "mesaUrl": null,
+    "cuenta": null
+  },
+  "vestimenta": {
+    "codigo": null,
+    "coloresEvitar": []
+  },
+  "cancion": null,
+  "hashtag": null,
+  "_verificar": [
+    "¿'Luis Martines Vite' o 'Luis Martínez Vite'? La hija figura como Martinez, probable errata.",
+    "Tildes de todos los nombres: Morán, Vílchez, Ipanaqué, Martínez, Zapata, Narihualá, Sullón.",
+    "El primer enlace de Maps es una vista de calle, no un lugar. ¿Es la fachada del templo o marca otra cosa?",
+    "La recepción queda a ~110 m del templo según coordenadas. Confirmar que efectivamente sea 'la parte de atrás'."
+  ]
+}

@@ -1,0 +1,126 @@
+---
+import { Image } from 'astro:assets';
+import { fotos } from '../fotos';
+import evento from '../content/evento.json';
+const { familia, novios } = evento;
+---
+
+<section class="familia">
+  <div data-reveal>
+    <h2 class="eyebrow familia__titulo">Nuestros padres</h2>
+    <div class="familia__bloques">
+      <div class="familia__bloque">
+        <span class="familia__rol">Padres del novio</span>
+        <p class="familia__nombres">
+          {familia.padresNovio.map((n) => <span class="familia__nombre">{n}</span>)}
+        </p>
+      </div>
+      <div class="familia__bloque">
+        <span class="familia__rol">Padres de la novia</span>
+        <p class="familia__nombres">
+          {familia.padresNovia.map((n) => <span class="familia__nombre">{n}</span>)}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {
+    familia.mostrarPadrinos && (
+      <div class="familia__padrinos" data-reveal>
+        <h2 class="familia__padrinos-titulo">{familia.tituloPadrinos}</h2>
+        <p class="familia__nombres">
+          {familia.padrinos.map((n) => <span class="familia__nombre">{n}</span>)}
+        </p>
+      </div>
+    )
+  }
+
+  <div class="familia__polaroid-zona" data-reveal>
+    <figure class="familia__polaroid">
+      <Image
+        src={fotos.manosCollarM}
+        alt="Las manos de Luis y Minda entrelazadas junto al collar con la inicial M"
+        widths={[186, 372, 558]}
+        sizes="186px"
+        loading="lazy"
+        class="familia__polaroid-foto"
+      />
+      <figcaption class="familia__polaroid-pie">{novios.novio.split(' ')[0]} &amp; {novios.novia.split(' ')[0]}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .familia { padding: 62px 26px; background: var(--crema); text-align: center; }
+  .familia__titulo { margin-bottom: 30px; font-size: 13px; }
+
+  .familia__bloques { display: grid; gap: 26px; }
+  .familia__bloque { display: flex; flex-direction: column; gap: 8px; }
+
+  .familia__rol {
+    font-size: 11px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--tinta-tenue);
+  }
+
+  /* Un nombre por línea: en una sola quedaban apretados y los apellidos
+     largos partían en sitios raros. */
+  .familia__nombres {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--tinta);
+  }
+  .familia__nombre {
+    display: block;
+    text-wrap: balance;
+  }
+  .familia__nombre + .familia__nombre { margin-top: 4px; }
+
+  .familia__padrinos {
+    margin-top: 46px;
+    padding-top: 40px;
+    border-top: 1px solid var(--linea);
+  }
+
+  .familia__padrinos-titulo {
+    margin: 0 0 8px;
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: 34px;
+    color: var(--verde-titulo);
+  }
+
+  .familia__polaroid-zona { margin-top: 40px; padding: 0 14px; }
+
+  .familia__polaroid {
+    position: relative;
+    width: 210px;
+    margin: 0 auto;
+    padding: 12px 12px 44px;
+    background: #fff;
+    box-shadow: 0 14px 34px rgba(27, 37, 64, .22);
+    transform: rotate(-2.4deg);
+  }
+
+  .familia__polaroid-foto {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 45%;
+  }
+
+  .familia__polaroid-pie {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: var(--script);
+    font-size: 17px;
+    color: var(--tinta-tenue);
+  }
+</style>

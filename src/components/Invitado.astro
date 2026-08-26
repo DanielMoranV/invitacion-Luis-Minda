@@ -1,0 +1,77 @@
+---
+/**
+ * Resuelve al invitado en el navegador leyendo el slug de la ruta /i/<slug>.
+ * Solo se monta en la página de invitado; en la portada genérica no se usa.
+ */
+import evento from '../content/evento.json';
+
+const config = {
+  projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID ?? 'luisyminda',
+  apiKey: import.meta.env.PUBLIC_FIREBASE_API_KEY ?? '',
+  bodaId: import.meta.env.PUBLIC_BODA_ID ?? 'luis-minda',
+  // Solo en desarrollo: apunta al emulador en vez de a Firestore real.
+  emulador: import.meta.env.PUBLIC_FIRESTORE_EMULATOR ?? '',
+  pasesPorDefecto: evento.invitadoPorDefecto.pases,
+};
+---
+
+<script is:inline define:vars={{ config }}>
+  window.__CONFIG_FIRESTORE = config;
+</script>
+<script is:inline src="/firestore-cliente.js"></script>
+
+<script is:inline>
+  (() => {
+    const slug = (location.pathname.match(/^\/i\/([^/?#]+)/) || [])[1];
+    if (!slug) return;
+
+    const avisar = (nombre, detalle) =>
+      document.dispatchEvent(new CustomEvent(nombre, { detail: detalle }));
+
+    (async () => {
+      let invitado = null;
+      try {
+        invitado = await window.__firestore.obtenerInvitado(decodeURIComponent(slug));
+      } catch {
+        avisar('invitado:error');
+        return;
+      }
+
+      // Enlace mal copiado o invitado borrado: la 404 de siempre.
+      if (!invitado) {
+        location.replace('/404');
+        return;
+      }
+
+      window.__invitado = invitado;
+
+      const etiqueta = invitado.pases === 1
+        ? `${invitado.nombre} · 1 pase`
+        : `${invitado.nombre} · ${invitado.pases} pases`;
+      document.querySelectorAll('[data-invitado-etiqueta]').forEach((el) => {
+        (el.querySelector('[data-invitado-texto]') || el).textContent = etiqueta;
+        el.hidden = false;
+      });
+
+      const campo = document.querySelector('[data-invitado-nombre]');
+      if (campo) campo.value = invitado.nombre;
+
+      // El selector solo ofrece hasta los pases que le tocan a este invitado.
+      const select = document.querySelector('[data-rsvp-lugares]');
+      if (select) {
+        select.innerHTML = '';
+        for (let i = 1; i <= invitado.pases; i++) {
+          const op = document.createElement('option');
+          op.value = String(i);
+          op.textContent = i === 1 ? '1 persona' : `${i} personas`;
+          select.appendChild(op);
+        }
+      }
+
+      avisar(
+        invitado.estado === 'pendiente' ? 'invitado:listo' : 'invitado:ya-respondio',
+        invitado,
+      );
+    })();
+  })();
+</script>

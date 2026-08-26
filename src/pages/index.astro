@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import Pagina from '../components/Pagina.astro';
+import { fotos } from '../fotos';
+import evento from '../content/evento.json';
+
+const { novios, fecha } = evento;
+const titulo = `${novios.novio} & ${novios.novia} — ${fecha.completa.replace('sábado ', '')}`;
+const descripcion = 'Con la bendición de Dios, tenemos el honor de invitarles a nuestra boda.';
+---
+
+<Base titulo={titulo} descripcion={descripcion} ogImagen={fotos.luisMinda.src}>
+  <Pagina />
+</Base>

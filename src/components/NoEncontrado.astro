@@ -1,0 +1,107 @@
+---
+import evento from '../content/evento.json';
+const { novios, fecha } = evento;
+---
+
+<section class="perdida">
+  <div class="perdida__marco" aria-hidden="true">
+    <span class="perdida__rombo"></span>
+    <span class="perdida__aro"></span>
+  </div>
+
+  <h1 class="perdida__titulo">Este enlace no existe</h1>
+
+  <p class="perdida__texto">
+    Puede que el enlace esté incompleto o que se haya cortado al copiarlo.
+    Vuelve a abrirlo desde el mensaje que te enviamos.
+  </p>
+
+  <a class="perdida__boton" href="/">Ir a la invitación</a>
+
+  <p class="perdida__firma">
+    {novios.iniciales} · {fecha.compacta}
+  </p>
+</section>
+
+<style>
+  .perdida {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 60px 30px;
+    background: var(--crema);
+    text-align: center;
+  }
+
+  /* El mismo anillo del favicon: la piedra mide la mitad que el aro y lo
+     toca, igual que en el SVG. */
+  .perdida__marco {
+    position: relative;
+    width: 60px;
+    height: 70px;
+    margin-bottom: 8px;
+  }
+  .perdida__rombo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin-left: -9px;
+    background: var(--oro-suave);
+    transform: rotate(45deg);
+  }
+  .perdida__aro {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    width: 52px;
+    height: 52px;
+    margin-left: -26px;
+    border: 4px solid var(--oro);
+    border-radius: 50%;
+  }
+
+  .perdida__titulo {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 27px;
+    line-height: 1.25;
+    color: var(--tinta);
+    text-wrap: balance;
+  }
+
+  .perdida__texto {
+    margin: 0;
+    max-width: 30ch;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--tinta-tenue);
+  }
+
+  .perdida__boton {
+    margin-top: 12px;
+    padding: 15px 34px;
+    text-decoration: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--oro-claro), var(--oro) 46%, var(--oro-oscuro));
+    color: #ffffff;
+    font-family: var(--display);
+    font-size: 12px;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+  }
+  .perdida__boton:hover { color: #ffffff; filter: brightness(1.04); }
+
+  .perdida__firma {
+    margin: 26px 0 0;
+    font-family: var(--display);
+    font-size: 13px;
+    letter-spacing: .18em;
+    color: var(--tinta-suave);
+  }
+</style>

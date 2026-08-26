@@ -1,0 +1,95 @@
+---
+// Subconjunto latino únicamente: el español cabe entero y pesa la mitad.
+import '@fontsource/cormorant-garamond/latin-300.css';
+import '@fontsource/cormorant-garamond/latin-300-italic.css';
+import '@fontsource/cormorant-garamond/latin-400.css';
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/marcellus/latin-400.css';
+import '@fontsource/parisienne/latin-400.css';
+import '../styles/tokens.css';
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  ogImagen: string;
+  ogAncho?: number;
+  ogAlto?: number;
+  /** Las rutas por invitado no deben indexarse. */
+  noIndex?: boolean;
+}
+
+const { titulo, descripcion, ogImagen, ogAncho = 743, ogAlto = 665, noIndex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = new URL(ogImagen, Astro.site);
+---
+
+<!doctype html>
+<html lang="es-PE" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content={String(ogAncho)} />
+    <meta property="og:image:height" content={String(ogAlto)} />
+    <meta property="og:image:alt" content="Luis y Minda mirándose; ella muestra el anillo de compromiso" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Luis & Minda" />
+    <meta property="og:locale" content="es_PE" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0f1c3d" />
+    {noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+    <script is:inline>
+      // Antes de pintar: si hay JS, el revelado toma el control.
+      document.documentElement.classList.remove('no-js');
+    </script>
+  </head>
+
+  <body>
+    <div class="hoja">
+      <slot />
+    </div>
+
+    <script>
+      // Revelado al entrar en viewport. Lo que ya está visible al cargar
+      // no se anima: evita el parpadeo de la portada.
+      const nodos = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+      const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reducido || !('IntersectionObserver' in window)) {
+        nodos.forEach((n) => n.classList.add('visible'));
+      } else {
+        const io = new IntersectionObserver(
+          (entradas) => {
+            entradas.forEach((e) => {
+              if (!e.isIntersecting) return;
+              e.target.classList.add('visible');
+              io.unobserve(e.target);
+            });
+          },
+          { threshold: 0.14, rootMargin: '0px 0px -8% 0px' },
+        );
+
+        nodos.forEach((n) => {
+          if (n.getBoundingClientRect().top < window.innerHeight * 0.92) {
+            n.classList.add('visible');
+          } else {
+            io.observe(n);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

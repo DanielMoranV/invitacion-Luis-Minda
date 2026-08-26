@@ -1,0 +1,194 @@
+{
+  "generado": "2026-08-23",
+  "descripcion": "Catalogo de imagenes de la sesion de compromiso. 'imagenes' contiene las versiones seleccionadas (mejor calidad de cada escena); 'descartar' lista los duplicados de menor resolucion.",
+  "imagenes": [
+    {
+      "id": "anillo-marco-pareja",
+      "nombre": "anillo-marco-pareja.jpg",
+      "ruta": "img/anillo-marco-pareja.jpg",
+      "resolucion": "1587x2245",
+      "peso_kb": 2771,
+      "descripcion": "Mano sosteniendo el anillo de compromiso en primer plano, enmarcando a la pareja abrazada a lo lejos sobre el cesped del jardin.",
+      "nombre_original": "foto 2.jpg.jpeg"
+    },
+    {
+      "id": "manos-nuca-color",
+      "nombre": "manos-nuca-color.jpg",
+      "ruta": "img/manos-nuca-color.jpg",
+      "resolucion": "1587x2245",
+      "peso_kb": 1913,
+      "descripcion": "Abrazo de espaldas: las manos de ella rodean la nuca y el hombro de el, con el anillo visible sobre la camisa blanca.",
+      "nombre_original": "foto 3.jpg.jpeg"
+    },
+    {
+      "id": "manos-collar-m",
+      "nombre": "manos-collar-m.jpg",
+      "ruta": "img/manos-collar-m.jpg",
+      "resolucion": "1587x2245",
+      "peso_kb": 1971,
+      "descripcion": "Detalle de manos entrelazadas sobre el brazo de el; se aprecia el anillo y el collar dorado con la inicial M.",
+      "nombre_original": "foto 4.jpg.jpeg"
+    },
+    {
+      "id": "espejo-circular-jardin",
+      "nombre": "espejo-circular-jardin.jpg",
+      "ruta": "img/espejo-circular-jardin.jpg",
+      "resolucion": "1587x2245",
+      "peso_kb": 2761,
+      "descripcion": "La pareja tomada de las manos vista a traves de un marco circular dorado colocado sobre el cesped, al atardecer entre los arboles.",
+      "nombre_original": "foto 5.jpg.jpeg"
+    },
+    {
+      "id": "mano-anillo-pecho",
+      "nombre": "mano-anillo-pecho.jpg",
+      "ruta": "img/mano-anillo-pecho.jpg",
+      "resolucion": "1587x2245",
+      "peso_kb": 1480,
+      "descripcion": "Primer plano de la mano de ella con el anillo apoyada sobre el pecho de el, mientras el sostiene su muneca.",
+      "nombre_original": "foto 1.jpg.jpeg"
+    },
+    {
+      "id": "manos-unidas-jardin",
+      "nombre": "manos-unidas-jardin.jpg",
+      "ruta": "img/manos-unidas-jardin.jpg",
+      "resolucion": "899x1599",
+      "peso_kb": 229,
+      "descripcion": "Plano vertical de las manos unidas de la pareja, palma sobre palma con el anillo, con el jardin y los setos florecidos de fondo.",
+      "nombre_original": "WhatsApp Image 2026-08-21 at 12.56.00 PM (2).jpeg"
+    },
+    {
+      "id": "manos-unidas-detalle",
+      "nombre": "manos-unidas-detalle.jpg",
+      "ruta": "img/manos-unidas-detalle.jpg",
+      "resolucion": "899x1599",
+      "peso_kb": 191,
+      "descripcion": "Variante mas cercana del mismo gesto: las manos se encuentran junto al vestido blanco de ella, con el anillo en el centro del encuadre.",
+      "nombre_original": "WhatsApp Image 2026-08-21 at 12.56.01 PM (3).jpeg"
+    },
+    {
+      "id": "manos-nuca-blanco-negro",
+      "nombre": "manos-nuca-blanco-negro.jpg",
+      "ruta": "img/manos-nuca-blanco-negro.jpg",
+      "resolucion": "1152x1536",
+      "peso_kb": 140,
+      "descripcion": "Version en blanco y negro del abrazo de espaldas con las manos sobre la nuca y el anillo visible.",
+      "nombre_original": "WhatsApp Image 2026-08-21 at 12.56.02 PM.jpeg"
+    },
+    {
+      "id": "abrazo-sonrisa-ia",
+      "nombre": "abrazo-sonrisa-ia.jpg",
+      "ruta": "img/abrazo-sonrisa-ia.jpg",
+      "resolucion": "899x1599",
+      "peso_kb": 72,
+      "descripcion": "Ella sonriendo mientras el la abraza por detras, con el anillo visible. Escena unica pero con marca de agua Meta AI y franjas de relleno.",
+      "advertencia": "calidad baja / marca de agua",
+      "nombre_original": "WhatsApp Image 2026-08-21 at 12.56.00 PM (1).jpeg"
+    },
+    {
+      "id": "manos-alcanzandose-ia",
+      "nombre": "manos-alcanzandose-ia.jpg",
+      "ruta": "img/manos-alcanzandose-ia.jpg",
+      "resolucion": "899x1599",
+      "peso_kb": 110,
+      "descripcion": "Ambas manos acercandose una a la otra con las copas de los arboles como fondo. Escena unica pero con marca de agua Meta AI y franjas verdes.",
+      "advertencia": "calidad baja / marca de agua",
+      "nombre_original": "WhatsApp Image 2026-08-21 at 12.56.01 PM.jpeg"
+    }
+  ],
+  "descartar": [
+    {
+      "nombre": "2.jpg",
+      "motivo": "Recodificacion identica de 'foto 2.jpg.jpeg' (misma resolucion, sin ganancia)",
+      "duplicado_de": "anillo-marco-pareja",
+      "ruta_anterior": "img/2.jpg",
+      "ruta": "img/descartadas/2.jpg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.43.00 PM.jpeg",
+      "resolucion": "1131x1600",
+      "motivo": "Version comprimida de WhatsApp de la misma foto",
+      "duplicado_de": "anillo-marco-pareja",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.43.00 PM.jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.43.00 PM.jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.56.00 PM.jpeg",
+      "resolucion": "1086x1448",
+      "motivo": "Mismo encuadre con recorte ligeramente distinto y menor resolucion",
+      "duplicado_de": "anillo-marco-pareja",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.56.00 PM.jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.56.00 PM.jpeg"
+    },
+    {
+      "nombre": "3.jpg",
+      "motivo": "Recodificacion identica de 'foto 3.jpg.jpeg'",
+      "duplicado_de": "manos-nuca-color",
+      "ruta_anterior": "img/3.jpg",
+      "ruta": "img/descartadas/3.jpg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.42.47 PM.jpeg",
+      "resolucion": "1131x1600",
+      "motivo": "Version comprimida de WhatsApp de la misma foto",
+      "duplicado_de": "manos-nuca-color",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.42.47 PM.jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.42.47 PM.jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.56.01 PM (1).jpeg",
+      "resolucion": "899x1599",
+      "motivo": "Recorte vertical de menor resolucion de la misma foto",
+      "duplicado_de": "manos-nuca-color",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.56.01 PM (1).jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.56.01 PM (1).jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.42.47 PM (1).jpeg",
+      "resolucion": "1131x1600",
+      "motivo": "Version comprimida de WhatsApp de la misma foto",
+      "duplicado_de": "manos-collar-m",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.42.47 PM (1).jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.42.47 PM (1).jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.56.01 PM (2).jpeg",
+      "resolucion": "899x1599",
+      "motivo": "Recorte vertical de menor resolucion de la misma foto",
+      "duplicado_de": "manos-collar-m",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.56.01 PM (2).jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.56.01 PM (2).jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.42.47 PM (2).jpeg",
+      "resolucion": "1131x1600",
+      "motivo": "Version comprimida de WhatsApp de la misma foto",
+      "duplicado_de": "espejo-circular-jardin",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.42.47 PM (2).jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.42.47 PM (2).jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.55.59 PM.jpeg",
+      "resolucion": "1086x1448",
+      "motivo": "Mismo encuadre con recorte ligeramente distinto y menor resolucion",
+      "duplicado_de": "espejo-circular-jardin",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.55.59 PM.jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.55.59 PM.jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.43.00 PM (1).jpeg",
+      "resolucion": "1131x1600",
+      "motivo": "Version comprimida de WhatsApp de la misma foto",
+      "duplicado_de": "mano-anillo-pecho",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.43.00 PM (1).jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.43.00 PM (1).jpeg"
+    },
+    {
+      "nombre": "WhatsApp Image 2026-08-21 at 12.56.00 PM (3).jpeg",
+      "resolucion": "899x1599",
+      "motivo": "Recorte vertical de menor resolucion de la misma foto",
+      "duplicado_de": "mano-anillo-pecho",
+      "ruta_anterior": "img/WhatsApp Image 2026-08-21 at 12.56.00 PM (3).jpeg",
+      "ruta": "img/descartadas/WhatsApp Image 2026-08-21 at 12.56.00 PM (3).jpeg"
+    }
+  ]
+}

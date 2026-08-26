@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function esDuenio(boda) {
+      return request.auth != null
+        && request.auth.uid in get(/databases/$(database)/documents/bodas/$(boda)).data.owners;
+    }
+
+    match /bodas/{boda} {
+      // Nadie del lado público lee este documento: la invitación solo accede a
+      // la subcolección de invitados. Y con lectura abierta cualquiera podría
+      // ver el array `owners`, que no aporta nada a nadie.
+      // Ojo: esDuenio() usa get() dentro de las reglas, que no pasa por ellas,
+      // así que cerrar esto no rompe la comprobación de dueño.
+      allow get, list, write: if esDuenio(boda);
+
+      match /invitados/{invitado} {
+        allow get: if true;
+        allow list: if esDuenio(boda);
+        // Los novios cargan la lista desde el panel, así que las altas ya no
+        // vienen de un script con cuenta de servicio (que se saltaba estas
+        // reglas) sino del navegador. Se valida la forma del documento para
+        // que un fallo del panel no ensucie la base.
+        allow create: if esDuenio(boda)
+          // Lista cerrada: nada de campos inventados desde el navegador.
+          && request.resource.data.keys().hasOnly([
+               'nombre','grupo','telefono','estado','asistentes','pases',
+               'enviadoEn','envios','creadoEn'
+             ])
+          && request.resource.data.nombre is string
+          && request.resource.data.nombre.size() > 0
+          && request.resource.data.nombre.size() <= 120
+          && request.resource.data.estado == 'pendiente'
+          && request.resource.data.asistentes == null
+          && request.resource.data.pases is int
+          && request.resource.data.pases >= 1
+          && request.resource.data.pases <= 20
+          && (request.resource.data.grupo == null
+              || request.resource.data.grupo.size() <= 80)
+          && (request.resource.data.telefono == null
+              || request.resource.data.telefono.size() <= 30);
+
+        allow delete: if esDuenio(boda);
+
+        // Confirmación desde el navegador, sin backend.
+        // Firestore evalúa esto del lado del servidor: el cliente no lo puede saltar.
+        allow update: if esDuenio(boda) || (
+          // 1. Solo puede tocar los campos de la confirmación
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['estado','asistentes','nombreConfirmado','dieta','mensaje','confirmadoEn'])
+          // 2. Nadie puede confirmar más personas que los pases que se le
+          //    asignaron. Los documentos creados antes de que existiera este
+          //    campo no lo tienen: para esos, 4 (el valor por defecto de la
+          //    boda) hace de tope.
+          && request.resource.data.asistentes is int
+          && request.resource.data.asistentes >= 0
+          && request.resource.data.asistentes <= resource.data.get('pases', 4)
+          // 3. Estado válido
+          && request.resource.data.estado in ['confirmado','declinado']
+          // 4. Coherencia: si declina no cuenta nadie; si confirma, al menos uno
+          && (request.resource.data.estado == 'confirmado' || request.resource.data.asistentes == 0)
+          && (request.resource.data.estado == 'declinado' || request.resource.data.asistentes >= 1)
+          // 6. Topes de longitud para que nadie use esto como almacenamiento
+          && request.resource.data.nombreConfirmado is string
+          && request.resource.data.nombreConfirmado.size() > 0
+          && request.resource.data.nombreConfirmado.size() <= 120
+          && (!('dieta' in request.resource.data) || request.resource.data.dieta == null
+              || request.resource.data.dieta.size() <= 500)
+        );
+      }
+    }
+
+    match /{documento=**} { allow read, write: if false; }
+  }
+}

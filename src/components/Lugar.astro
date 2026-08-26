@@ -1,0 +1,217 @@
+---
+import { Image } from 'astro:assets';
+import evento from '../content/evento.json';
+import mapaUbicacion from '../../img/mapa-ubicacion.jpg';
+const { lugar } = evento;
+
+// Mapa estático generado a partir de tiles de OpenStreetMap (sin iframe de
+// Google, sin cookies de terceros y sin API key). Regenerar con
+// scripts/build-static-map.py si cambian las coordenadas de la iglesia o
+// del local de recepción. El botón lleva a las indicaciones reales.
+---
+
+<section class="lugar">
+  <div class="lugar__cabecera" data-reveal>
+    <h2 class="lugar__eyebrow">El lugar</h2>
+    <p class="lugar__nombre">{lugar.nombre}</p>
+    <p class="lugar__direccion">{lugar.direccion}</p>
+    <p class="lugar__nota">{lugar.nota}</p>
+    {lugar.pastor && <p class="lugar__pastor">Oficia {lugar.pastor}</p>}
+  </div>
+
+  <div class="lugar__horas" data-reveal>
+    <div class="lugar__hora">
+      <div class="lugar__hora-rol">Ceremonia</div>
+      <div class="lugar__hora-valor">{lugar.horaCeremonia}</div>
+    </div>
+  </div>
+
+  <div class="lugar__mapa-zona" data-reveal>
+    <div class="lugar__mapa">
+      <Image
+        src={mapaUbicacion}
+        alt="Mapa con la ubicación de la iglesia y del local de recepción, muy cerca uno del otro"
+        width={900}
+        height={600}
+      />
+    </div>
+
+    {lugar.recepcion && (
+      <ul class="lugar__leyenda">
+        <li><span class="lugar__leyenda-punto lugar__leyenda-punto--ceremonia" aria-hidden="true"></span>Ceremonia</li>
+        <li><span class="lugar__leyenda-punto lugar__leyenda-punto--recepcion" aria-hidden="true"></span>Recepción</li>
+      </ul>
+    )}
+
+    <p class="lugar__mapa-atribucion">Mapa © colaboradores de OpenStreetMap</p>
+
+    <a class="lugar__boton" href={lugar.mapsUrl} target="_blank" rel="noopener noreferrer">
+      Cómo llegar a la ceremonia
+    </a>
+  </div>
+
+  {lugar.recepcion && (
+    <div class="lugar__recepcion" data-reveal>
+      <p class="lugar__recepcion-titulo">Recepción</p>
+      <p class="lugar__recepcion-direccion">{lugar.recepcion.direccion ?? 'por confirmar'}</p>
+      <a class="lugar__boton lugar__boton--secundario" href={lugar.recepcion.mapsUrl} target="_blank" rel="noopener noreferrer">
+        Cómo llegar a la recepción
+      </a>
+    </div>
+  )}
+</section>
+
+<style>
+  .lugar { padding: 64px 26px; background: var(--verde-seccion); color: var(--sobre-foto); }
+
+  .lugar__cabecera { text-align: center; }
+
+  .lugar__eyebrow {
+    margin: 0 0 6px;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: .34em;
+    text-transform: uppercase;
+    color: var(--oro-sobre-foto);
+  }
+
+  .lugar__nombre {
+    margin: 0 0 4px;
+    font-family: var(--display);
+    font-size: 25px;
+    line-height: 1.3;
+  }
+
+  .lugar__direccion { margin: 0; font-size: 16px; color: var(--sobre-foto-72); }
+
+  .lugar__nota {
+    margin: 14px auto 0;
+    max-width: 30ch;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--sobre-foto-66);
+  }
+
+  .lugar__pastor {
+    margin: 12px 0 0;
+    font-family: var(--display);
+    font-size: 13px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--oro-sobre-foto);
+  }
+
+  .lugar__horas {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: 1fr;
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .lugar__hora { background: var(--verde-seccion); padding: 20px 10px; text-align: center; }
+
+  .lugar__hora-rol {
+    font-size: 11px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: rgba(168, 205, 232, .85);
+  }
+
+  .lugar__hora-valor { margin-top: 10px; font-family: var(--display); font-size: 24px; }
+
+  .lugar__mapa-zona { margin-top: 22px; }
+
+  .lugar__mapa {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border: 1px solid rgba(246, 241, 232, .14);
+  }
+
+  .lugar__mapa :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .lugar__leyenda {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(246, 241, 232, .78);
+  }
+
+  .lugar__leyenda li { display: flex; align-items: center; gap: 6px; }
+
+  .lugar__leyenda-punto {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex: none;
+  }
+  .lugar__leyenda-punto--ceremonia { background: #23448f; }
+  .lugar__leyenda-punto--recepcion { background: #1b2540; }
+
+  .lugar__mapa-atribucion {
+    margin: 6px 0 0;
+    font-size: 10px;
+    text-align: center;
+    color: rgba(246, 241, 232, .5);
+  }
+
+  .lugar__boton {
+    display: block;
+    margin-top: 16px;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--oro-claro), var(--oro) 46%, var(--oro-oscuro));
+    color: #ffffff;
+    font-family: var(--display);
+    font-size: 12px;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+  }
+  .lugar__boton:hover { color: #ffffff; filter: brightness(1.04); }
+
+  .lugar__recepcion {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid var(--linea-clara);
+    text-align: center;
+  }
+
+  .lugar__recepcion-titulo {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 13px;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--oro-sobre-foto);
+  }
+
+  .lugar__recepcion-direccion {
+    margin: 6px 0 0;
+    font-size: 15px;
+    color: var(--sobre-foto-72);
+  }
+
+  .lugar__boton--secundario {
+    background: transparent;
+    border: 1px solid var(--oro);
+    color: var(--oro-sobre-foto);
+  }
+  .lugar__boton--secundario:hover { color: var(--oro-sobre-foto); filter: brightness(1.15); }
+</style>

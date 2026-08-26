@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+.env
+.env.production
+
+# Datos de invitados: nombres, teléfonos y enlaces. Nunca al repositorio.
+enlaces-invitados.csv
+invitados*.csv
+*-service-account.json
+firebase-debug.log
+firestore-debug.log
+.firebase/
+
+# Bundle SSR copiado antes de desplegar
+functions/ssr/
+functions/node_modules/
+
+# Fotos descartadas por la pareja: no van al sitio, no hace falta que
+# queden para siempre en el historial de git.
+img/descartadas/

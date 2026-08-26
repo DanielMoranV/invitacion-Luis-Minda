@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import { fotos } from '../fotos';
+import evento from '../content/evento.json';
+const { invitacion } = evento;
+---
+
+<section class="invitacion">
+  <div class="invitacion__texto" data-reveal>
+    <span class="rombo" aria-hidden="true"></span>
+    <h2 class="invitacion__titulo">{invitacion.titulo}</h2>
+    <p class="invitacion__parrafo">{invitacion.texto}</p>
+  </div>
+
+  <figure class="invitacion__figura" data-reveal>
+    <Image
+      src={fotos.luisMinda}
+      alt="Luis y Minda mirándose de frente; ella muestra el anillo de compromiso"
+      widths={[406, 620, 743]}
+      sizes="(max-width: 430px) calc(100vw - 76px), 354px"
+      loading="lazy"
+      class="invitacion__foto"
+    />
+    <span class="invitacion__marco" aria-hidden="true"></span>
+  </figure>
+</section>
+
+<style>
+  .invitacion { padding: 12px 26px 62px; background: var(--crema); text-align: center; }
+
+  .invitacion__texto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .invitacion__titulo {
+    margin: 0;
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.1;
+    color: var(--verde-titulo);
+  }
+
+  .invitacion__parrafo {
+    margin: 0;
+    max-width: 30ch;
+    font-size: 18px;
+    line-height: 1.68;
+    color: var(--tinta-media);
+  }
+
+  .invitacion__figura {
+    margin: 34px 0 0;
+    position: relative;
+    padding: 0 12px;
+  }
+
+  .invitacion__foto {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 42%;
+  }
+
+  .invitacion__marco {
+    position: absolute;
+    inset: 8px 20px;
+    border: 1px solid rgba(246, 241, 232, .35);
+    pointer-events: none;
+  }
+</style>

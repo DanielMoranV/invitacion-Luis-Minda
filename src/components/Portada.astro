@@ -1,0 +1,184 @@
+---
+import CapasFoto from './CapasFoto.astro';
+import { fotos } from '../fotos';
+import evento from '../content/evento.json';
+
+const { novios, fecha, invitacion, versiculos } = evento;
+// El velo vive en tokens.css: es paleta, no lógica de este componente.
+---
+
+<section class="foto-fondo portada">
+  <CapasFoto
+    src={fotos.espejoCircularJardin}
+    alt="Luis y Minda tomados de las manos, vistos a través de un marco circular dorado en el jardín"
+    velo="var(--velo-portada)"
+    posicion="50% 42%"
+    prioritaria
+  />
+  <div class="portada__top">
+    <p class="portada__eyebrow" data-reveal>{invitacion.eyebrow}</p>
+    <div class="portada__pase" data-invitado-etiqueta hidden data-reveal>
+      <span class="portada__punto"></span>
+      <span data-invitado-texto></span>
+    </div>
+  </div>
+
+  <div class="portada__centro" data-reveal>
+    <h1 class="portada__nombres">
+      {novios.novio}<span class="portada__amp">&amp;</span>{novios.novia}
+    </h1>
+
+    <div class="portada__filete" aria-hidden="true">
+      <span class="portada__filete-linea portada__filete-linea--izq"></span>
+      <span class="portada__filete-rombo"></span>
+      <span class="portada__filete-linea portada__filete-linea--der"></span>
+    </div>
+
+    <p class="portada__versiculo">«{versiculos.portada.texto}»</p>
+    <p class="cita portada__cita">{versiculos.version ? `${versiculos.portada.cita} · ${versiculos.version}` : versiculos.portada.cita}</p>
+  </div>
+
+  <div class="portada__abajo">
+    <p class="portada__fecha" data-reveal>
+      <span class="portada__fecha-lado">{fecha.diaSemana}</span>
+      <span class="portada__fecha-dia">{fecha.dia}</span>
+      <span class="portada__fecha-lado">{fecha.mesAnio}</span>
+    </p>
+    <span class="portada__hint" aria-hidden="true"></span>
+  </div>
+</section>
+
+<style>
+  .portada {
+    min-height: 100svh;
+    display: grid;
+    /* auto/1fr/auto en vez de 1fr/auto/auto: en pantallas bajas el sobrante
+       lo absorbe el centro y los bloques nunca se pegan entre sí. */
+    grid-template-rows: auto 1fr auto;
+    row-gap: 28px;
+    padding: 40px 26px 34px;
+    color: var(--sobre-foto);
+    text-shadow: 0 1px 18px rgba(16, 22, 13, .5);
+  }
+
+
+  .portada__top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .portada__eyebrow {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 11px;
+    letter-spacing: .42em;
+    text-transform: uppercase;
+    color: rgba(246, 241, 232, .82);
+  }
+
+  .portada__pase {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 14px;
+    border: 1px solid rgba(201, 162, 83, .55);
+    border-radius: 999px;
+    background: rgba(12, 22, 48, .38);
+    backdrop-filter: blur(3px);
+    font-size: 13px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(246, 241, 232, .9);
+  }
+
+  .portada__pase[hidden] { display: none; }
+
+  .portada__punto {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--oro);
+    flex: none;
+  }
+
+  .portada__centro { text-align: center; padding: 0 4px; align-self: center; }
+
+  .portada__nombres {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 46px;
+    line-height: 1.02;
+    letter-spacing: .01em;
+    text-wrap: balance;
+  }
+
+  .portada__amp {
+    display: block;
+    font-family: var(--script);
+    font-size: 34px;
+    color: var(--oro-suave);
+    margin: 6px 0 2px;
+    line-height: 1;
+  }
+
+  .portada__filete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 22px 0 18px;
+  }
+  .portada__filete-linea { height: 1px; width: 42px; }
+  .portada__filete-linea--izq { background: linear-gradient(90deg, transparent, rgba(168, 205, 232, .85)); }
+  .portada__filete-linea--der { background: linear-gradient(90deg, rgba(168, 205, 232, .85), transparent); }
+  .portada__filete-rombo { width: 5px; height: 5px; background: var(--oro-suave); transform: rotate(45deg); }
+
+  .portada__versiculo {
+    margin: 0 auto;
+    max-width: 19ch;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.5;
+    color: rgba(246, 241, 232, .92);
+  }
+
+  .portada__cita { margin-top: 10px; font-size: 11px; letter-spacing: .3em; color: rgba(168, 205, 232, .85); }
+
+  .portada__abajo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .portada__fecha {
+    margin: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    font-family: var(--display);
+  }
+  .portada__fecha-lado {
+    font-size: 11px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    color: rgba(246, 241, 232, .8);
+  }
+  .portada__fecha-dia {
+    font-size: 54px;
+    line-height: .82;
+    color: var(--sobre-foto);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .portada__hint {
+    width: 1px;
+    height: 34px;
+    background: linear-gradient(180deg, rgba(246, 241, 232, .5), transparent);
+    animation: scrollHint 2.4s ease-in-out infinite;
+  }
+</style>

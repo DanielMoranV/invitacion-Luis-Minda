@@ -1,0 +1,62 @@
+---
+import Portada from './Portada.astro';
+import CuentaRegresiva from './CuentaRegresiva.astro';
+import Invitacion from './Invitacion.astro';
+import Versiculo from './Versiculo.astro';
+import PadresPadrinos from './PadresPadrinos.astro';
+import Lugar from './Lugar.astro';
+import Vestimenta from './Vestimenta.astro';
+import Galeria from './Galeria.astro';
+import Hashtag from './Hashtag.astro';
+import Rsvp from './Rsvp.astro';
+import Cierre from './Cierre.astro';
+import BotonMusica from './BotonMusica.astro';
+import InvitadoDatos from './Invitado.astro';
+
+import { fotos } from '../fotos';
+import evento from '../content/evento.json';
+
+interface Props {
+  /** true en /i/<slug>: monta el cliente de Firestore y el formulario. */
+  personalizada?: boolean;
+}
+
+const { personalizada = false } = Astro.props;
+const { versiculos } = evento;
+---
+
+<Portada />
+<CuentaRegresiva />
+<Invitacion />
+
+<Versiculo
+  src={fotos.manosNucaColor}
+  alt="Minda abrazando a Luis por la espalda, con el anillo visible"
+  texto={versiculos.destacado.texto}
+  cita={versiculos.destacado.cita}
+  version={versiculos.version}
+  velo="var(--velo-destacado)"
+  posicion="50% 30%"
+  variante="destacado"
+/>
+
+<PadresPadrinos />
+<Lugar />
+
+<Versiculo
+  src={fotos.manosUnidasJardin}
+  alt="Las manos de Luis y Minda unidas en el jardín"
+  texto={versiculos.divisor.texto}
+  cita={versiculos.divisor.cita}
+  version={versiculos.version}
+  velo="var(--velo-divisor)"
+/>
+
+<Vestimenta />
+<Galeria />
+<Hashtag />
+<Rsvp personalizada={personalizada} />
+<Cierre />
+
+<BotonMusica />
+{personalizada && <InvitadoDatos />}

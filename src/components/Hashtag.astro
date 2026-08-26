@@ -1,0 +1,46 @@
+---
+import evento from '../content/evento.json';
+const { hashtag } = evento;
+---
+
+<section class="hashtag">
+  <div data-reveal>
+    <p class="hashtag__texto">{hashtag.texto}</p>
+    <p class="hashtag__valor">{hashtag.valor}</p>
+    <p class="hashtag__nota">{hashtag.nota}</p>
+  </div>
+</section>
+
+<style>
+  .hashtag {
+    padding: 56px 26px;
+    background: var(--verde-seccion);
+    color: var(--sobre-foto);
+    text-align: center;
+  }
+
+  .hashtag__texto {
+    margin: 0 auto 16px;
+    max-width: 26ch;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--sobre-foto-72);
+  }
+
+  .hashtag__valor {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 24px;
+    color: var(--oro-suave);
+    letter-spacing: .02em;
+  }
+
+  .hashtag__nota {
+    margin: 12px 0 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(246, 241, 232, .75);
+  }
+</style>

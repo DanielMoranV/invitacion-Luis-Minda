@@ -1,0 +1,131 @@
+{
+  "novios": {
+    "novio": "Luis Ángel",
+    "novia": "Minda Loren",
+    "iniciales": "L & M",
+    "novioCompleto": "Luis Ángel Morán Vílchez",
+    "noviaCompleta": "Minda Loren Martínez Zapata",
+    "display": "Luis & Minda"
+  },
+  "fecha": {
+    "iso": "2027-01-30T16:00:00-05:00",
+    "dia": "30",
+    "diaSemana": "sáb",
+    "mesAnio": "ene 2027",
+    "completa": "sábado 30 de enero de 2027",
+    "compacta": "30.01.2027",
+    "limiteConfirmacion": "30 de diciembre de 2026"
+  },
+  "invitacion": {
+    "eyebrow": "Nuestra boda",
+    "titulo": "Nuestra boda",
+    "texto": "La semilla del amor que Dios puso en nuestros corazones ha crecido y llegó el gran momento de unir nuestras vidas para siempre. Te invitamos a acompañarnos en nuestro día especial."
+  },
+  "familia": {
+    "padresNovio": [
+      "Ángel Morán Castro",
+      "Socorro Vílchez Ipanaqué"
+    ],
+    "padresNovia": [
+      "Luis Martínez Vite",
+      "Dora Zapata Sosa de Martínez"
+    ],
+    "mostrarPadrinos": true,
+    "tituloPadrinos": "Nuestros padrinos",
+    "padrinos": [
+      "Elmer Zapata Rufino",
+      "Rebeca Martínez Zapata"
+    ]
+  },
+  "lugar": {
+    "nombre": "Iglesia del Nazareno",
+    "direccion": "Monte Sullón · Jr. Narihualá #164",
+    "nota": "La recepción es en un local aparte, a pocos pasos de la iglesia.",
+    "horaCeremonia": "4:00 pm",
+    "mapsUrl": "https://maps.app.goo.gl/bgrinR5BkYTH5gCu8",
+    "coordenadas": {
+      "lat": -5.2783243,
+      "lng": -80.6816663
+    },
+    "pastor": "Ps. Juan Sosa Sernaque",
+    "recepcion": {
+      "nombre": "Local de recepción",
+      "direccion": "por confirmar",
+      "mapsUrl": "https://maps.app.goo.gl/x5nEhW3pLzaRDwy18",
+      "coordenadas": {
+        "lat": -5.278729,
+        "lng": -80.680845
+      }
+    }
+  },
+  "vestimenta": {
+    "codigo": "Formal",
+    "texto": "Les pedimos reservar estos colores para los novios y el cortejo.",
+    "nota": null,
+    "evitar": [
+      {
+        "nombre": "blanco",
+        "hex": "#ffffff"
+      },
+      {
+        "nombre": "crema",
+        "hex": "#f3e9d6"
+      },
+      {
+        "nombre": "perla",
+        "hex": "#e6e2dc"
+      },
+      {
+        "nombre": "rojo",
+        "hex": "#b3262c"
+      },
+      {
+        "nombre": "cobalto",
+        "hex": "#1f3f93"
+      },
+      {
+        "nombre": "celeste",
+        "hex": "#a8cde8"
+      }
+    ]
+  },
+  "hashtag": {
+    "valor": "#LuisYMinda2027",
+    "texto": "Comparte tus fotos del día con nuestro hashtag y ayúdanos a guardar cada momento.",
+    "nota": "hashtag por confirmar"
+  },
+  "versiculos": {
+    "version": "NVI",
+    "portada": {
+      "texto": "Por tanto, lo que Dios ha unido, que no lo separe el hombre.",
+      "cita": "Marcos 10:9"
+    },
+    "destacado": {
+      "texto": "Grábame como un sello sobre tu corazón; llévame como una marca sobre tu brazo. Fuerte es el amor, como la muerte.",
+      "cita": "Cantares 8:6"
+    },
+    "divisor": {
+      "texto": "Uno solo puede ser vencido, pero dos pueden resistir. ¡La cuerda de tres hilos no se rompe fácilmente!",
+      "cita": "Eclesiastés 4:12"
+    },
+    "cierre": {
+      "texto": "Nosotros amamos porque él nos amó primero.",
+      "cita": "1 Juan 4:19"
+    },
+    "_verificar": "Redacción NVI reproducida de memoria. Contrastar los cuatro contra una Biblia NVI antes de enviar la invitación."
+  },
+  "invitadoPorDefecto": {
+    "nombre": "Familia Pérez",
+    "pases": 4
+  },
+  "cancion": {
+    "artista": "Fonseca",
+    "titulo": "Qué suerte tenerte",
+    "archivo": "/audio/fonseca-que-suerte-tenerte.mp3",
+    "inicioSegundos": 35
+  },
+  "config": {
+    "regalos": "oculto",
+    "niños": true
+  }
+}

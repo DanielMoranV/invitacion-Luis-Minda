@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import NoEncontrado from '../components/NoEncontrado.astro';
+import { fotos } from '../fotos';
+---
+
+<Base
+  titulo="Página no encontrada — Luis Ángel & Minda Loren"
+  descripcion="El enlace que abriste no existe."
+  ogImagen={fotos.luisMinda.src}
+  noIndex
+>
+  <NoEncontrado />
+</Base>

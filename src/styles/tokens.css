@@ -1,0 +1,183 @@
+/* Paleta: azul cobalto con celeste pastel, la temática que eligieron los
+   novios. La crema se conserva como fondo porque también forma parte de sus
+   colores reservados.
+
+   Contrastes verificados contra WCAG AA (4.5 texto / 3.0 bordes) sobre cada
+   fondo real: los 11 pares medidos cumplen.
+
+   La invitación se compromete a un solo tema; no hay paleta oscura. */
+
+:root {
+  /* Fondos */
+  --crema:         #f6f1e8;
+  --crema-alt:     #e9eff6;   /* sección alterna, celeste muy diluido */
+  --crema-panel:   #eaf0f7;
+  --campo:         #fdfcfa;
+  --verde-seccion: #1b3161;   /* secciones oscuras (nombre heredado) */
+  --verde-marco:   #0f1c3d;   /* marco de la página */
+
+  /* Tinta */
+  --tinta:         #1b2540;
+  --tinta-media:   #3a476b;
+  --tinta-suave:   #4a5878;
+  --tinta-tenue:   #5d6a8a;
+  --verde-titulo:  #23448f;   /* títulos en script (nombre heredado) */
+
+  /* Azules de la temática */
+  --oro:           #23448f;   /* acento principal (nombre heredado) */
+  --oro-claro:     #3560b8;
+  --oro-oscuro:    #1a3370;
+  --oro-suave:     #a8cde8;   /* celeste pastel, sobre fondos oscuros */
+
+  /* Sobre foto */
+  --sobre-foto:        #f6f1e8;
+  --sobre-foto-80:     rgba(246, 241, 232, .8);
+  --sobre-foto-72:     rgba(246, 241, 232, .72);
+  --sobre-foto-66:     rgba(246, 241, 232, .66);
+  --oro-sobre-foto:    rgba(168, 205, 232, .95);
+
+  /* Velos sobre fotografía: antes iban incrustados en cada componente. */
+  --velo-portada: linear-gradient(180deg,
+      rgba(12, 22, 48, .68) 0%, rgba(12, 22, 48, .36) 26%,
+      rgba(12, 22, 48, .60) 50%, rgba(12, 22, 48, .84) 76%,
+      rgba(12, 22, 48, .95) 100%);
+  --velo-destacado: linear-gradient(180deg, rgba(14, 25, 54, .80), rgba(14, 25, 54, .88));
+  --velo-divisor:   linear-gradient(180deg, rgba(14, 25, 54, .54), rgba(14, 25, 54, .74));
+  --velo-cierre:    linear-gradient(180deg, rgba(10, 18, 40, .58), rgba(10, 18, 40, .90));
+
+  /* Líneas */
+  --linea:         rgba(27, 37, 64, .16);
+  --linea-campo:   rgba(27, 37, 64, .26);
+  --linea-clara:   rgba(246, 241, 232, .18);
+
+  /* Estado */
+  --activo-borde:  var(--oro);
+  --activo-fondo:  #dde7f6;
+  --activo-tinta:  #16305f;
+  --aviso:         #8c5a2b;
+
+  /* Tipografía */
+  --serif:   'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --display: 'Marcellus', Georgia, serif;
+  --script:  'Parisienne', 'Segoe Script', cursive;
+  --mono:    ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Medidas */
+  --ancho: 430px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--verde-marco);
+}
+
+body {
+  font-family: var(--serif);
+  font-weight: 300;
+  color: var(--tinta);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--oro-oscuro); }
+a:hover { color: var(--oro); }
+input, select, textarea, button { font-family: inherit; }
+::selection { background: var(--oro); color: var(--verde-marco); }
+
+img { max-width: 100%; display: block; }
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--oro-oscuro);
+  outline-offset: 2px;
+}
+
+/* ── Utilidades tipográficas ───────────────────────────── */
+
+.eyebrow {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+  margin: 0;
+}
+
+.cita {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--oro-sobre-foto);
+  margin: 0;
+}
+
+.nota-pendiente {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+  margin: 0;
+}
+
+.rombo {
+  width: 5px;
+  height: 5px;
+  background: var(--oro-oscuro);
+  transform: rotate(45deg);
+  display: block;
+}
+
+/* ── Revelado al hacer scroll ──────────────────────────── */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .85s ease, transform .85s cubic-bezier(.22, .7, .25, 1);
+}
+[data-reveal].visible,
+.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@keyframes scrollHint {
+  0%, 100% { transform: translateY(0);   opacity: .45; }
+  50%      { transform: translateY(7px); opacity: 1; }
+}
+
+/* ── Estructura ────────────────────────────────────────── */
+
+.hoja {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  background: var(--crema);
+  color: var(--tinta);
+  overflow-x: hidden;
+  position: relative;
+  box-shadow: 0 0 80px rgba(0, 0, 0, .55);
+}
+
+/* Sección con fotografía de fondo: la imagen va como <img> real para que
+   astro:assets pueda generar srcset, con el velo encima como capa aparte. */
+.foto-fondo { position: relative; isolation: isolate; }
+.foto-fondo > .foto-fondo__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+.foto-fondo > .foto-fondo__velo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}

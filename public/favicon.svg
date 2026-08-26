@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Luis y Minda">
+  <rect width="64" height="64" rx="14" fill="#0f1c3d"/>
+  <!-- El anillo: aro y solitario. El rombo es el ornamento que se repite
+       en toda la invitación, así que hace de piedra. -->
+  <circle cx="32" cy="40" r="17" fill="none" stroke="#a8cde8" stroke-width="5"/>
+  <path d="M32 6 L41.5 16 L32 26 L22.5 16 Z" fill="#d8e9f5"/>
+</svg>

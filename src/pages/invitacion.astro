@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import Pagina from '../components/Pagina.astro';
+import { fotos } from '../fotos';
+import evento from '../content/evento.json';
+
+// Página estática servida en /i/<slug> mediante una reescritura de Firebase
+// Hosting. El slug lo lee el navegador de la ruta; los datos del invitado los
+// pide a Firestore, que valida todo con las reglas de seguridad.
+const { novios, fecha } = evento;
+const titulo = `${novios.novio} & ${novios.novia} — ${fecha.completa.replace('sábado ', '')}`;
+const descripcion = 'Con la bendición de Dios, tenemos el honor de invitarles a nuestra boda.';
+---
+
+<Base titulo={titulo} descripcion={descripcion} ogImagen={fotos.luisMinda.src} noIndex>
+  <Pagina personalizada />
+</Base>

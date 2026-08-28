@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import {
   escucharInvitados, crearInvitado, editarInvitado, borrarInvitado,
   marcarEnviado, desmarcarEnviado, confirmarAMano, volverAPendiente,
-  PASES_POR_DEFECTO,
+  avisoAlGuardar, PASES_POR_DEFECTO,
   type Invitado, type Estado,
 } from './datos';
 import { Importar } from './Importar';
@@ -470,9 +470,7 @@ function FormularioEdicion({ inv, alCerrar }: { inv: Invitado; alCerrar: () => v
       });
       alCerrar();
     } catch (e) {
-      console.error('[invitados] falló editarInvitado:', e);
-      const codigo = (e as { code?: string })?.code;
-      setError(`No se pudo guardar.${codigo ? ` (${codigo})` : ''}`);
+      setError(avisoAlGuardar(e));
       setGuardando(false);
     }
   };
@@ -523,13 +521,7 @@ function FormularioAlta({ alCerrar }: { alCerrar: () => void }) {
       setTelefono('');
       setGuardando(false);
     } catch (e) {
-      console.error('[invitados] falló crearInvitado:', e);
-      const codigo = (e as { code?: string })?.code;
-      setError(
-        codigo === 'permission-denied'
-          ? 'Firestore rechazó el alta (permission-denied). Revisa las reglas y "owners".'
-          : `No se pudo guardar. Revisa tu conexión.${codigo ? ` (${codigo})` : ''}`,
-      );
+      setError(avisoAlGuardar(e));
       setGuardando(false);
     }
   };

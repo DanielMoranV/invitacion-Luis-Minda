@@ -132,19 +132,29 @@ export async function crearInvitadosEnLote(lista: NuevoInvitado[]): Promise<stri
       slugs.push(slug);
       lote.set(documento(slug), documentoNuevo(g));
     }
-    try {
-      await lote.commit();
-    } catch (e) {
-      console.error(
-        `[datos] lote.commit() falló en el trozo ${i}-${i + trozo.length}:`,
-        e,
-        '\nprimer documento del trozo:',
-        documentoNuevo(trozo[0]),
-      );
-      throw e;
-    }
+    await lote.commit();
   }
   return slugs;
+}
+
+/**
+ * Traduce un fallo al guardar en un aviso claro para quien usa el panel.
+ * No expone códigos ni detalles internos: solo dice qué pasó y qué hacer.
+ */
+export function avisoAlGuardar(e: unknown): string {
+  switch ((e as { code?: string })?.code) {
+    case 'permission-denied':
+    case 'unauthenticated':
+      return 'Hubo un problema con tu sesión. Cierra sesión, vuelve a entrar e inténtalo otra vez.';
+    case 'unavailable':
+    case 'deadline-exceeded':
+    case 'cancelled':
+      return 'No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.';
+    case 'resource-exhausted':
+      return 'El servidor está ocupado ahora mismo. Espera unos segundos e inténtalo de nuevo.';
+    default:
+      return 'No se pudo guardar. Inténtalo de nuevo en unos segundos.';
+  }
 }
 
 export async function editarInvitado(

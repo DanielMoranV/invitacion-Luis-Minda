@@ -1,5 +1,8 @@
 import { useState } from 'preact/hooks';
-import { crearInvitadosEnLote, PASES_POR_DEFECTO, type Invitado, type NuevoInvitado } from './datos';
+import {
+  avisoAlGuardar, crearInvitadosEnLote, PASES_POR_DEFECTO,
+  type Invitado, type NuevoInvitado,
+} from './datos';
 
 /** SheetJS pesa bastante: se carga solo cuando se abre esta pantalla. */
 async function sheetjs() {
@@ -109,8 +112,7 @@ export function Importar({ existentes, alCerrar }: Props) {
       } else {
         setFilas(leidas);
       }
-    } catch (e) {
-      console.error('[importar] falló la lectura del archivo:', e);
+    } catch {
       setError('No pudimos leer el archivo. Debe ser .xlsx, .xls o .csv.');
       setFilas(null);
     } finally {
@@ -137,13 +139,7 @@ export function Importar({ existentes, alCerrar }: Props) {
       setHecho(lista.length);
       setFilas(null);
     } catch (e) {
-      console.error('[importar] falló crearInvitadosEnLote:', e);
-      const codigo = (e as { code?: string })?.code;
-      setError(
-        codigo === 'permission-denied'
-          ? 'Firestore rechazó el alta (permission-denied). Revisa que las reglas estén desplegadas y que tu usuario esté en "owners".'
-          : `No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.${codigo ? ` (${codigo})` : ''}`,
-      );
+      setError(avisoAlGuardar(e));
     } finally {
       setGuardando(false);
     }

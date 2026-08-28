@@ -109,7 +109,8 @@ export function Importar({ existentes, alCerrar }: Props) {
       } else {
         setFilas(leidas);
       }
-    } catch {
+    } catch (e) {
+      console.error('[importar] falló la lectura del archivo:', e);
       setError('No pudimos leer el archivo. Debe ser .xlsx, .xls o .csv.');
       setFilas(null);
     } finally {
@@ -135,8 +136,14 @@ export function Importar({ existentes, alCerrar }: Props) {
       await crearInvitadosEnLote(lista);
       setHecho(lista.length);
       setFilas(null);
-    } catch {
-      setError('No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.');
+    } catch (e) {
+      console.error('[importar] falló crearInvitadosEnLote:', e);
+      const codigo = (e as { code?: string })?.code;
+      setError(
+        codigo === 'permission-denied'
+          ? 'Firestore rechazó el alta (permission-denied). Revisa que las reglas estén desplegadas y que tu usuario esté en "owners".'
+          : `No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.${codigo ? ` (${codigo})` : ''}`,
+      );
     } finally {
       setGuardando(false);
     }

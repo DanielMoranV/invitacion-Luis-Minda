@@ -469,8 +469,10 @@ function FormularioEdicion({ inv, alCerrar }: { inv: Invitado; alCerrar: () => v
         pases: n,
       });
       alCerrar();
-    } catch {
-      setError('No se pudo guardar.');
+    } catch (e) {
+      console.error('[invitados] falló editarInvitado:', e);
+      const codigo = (e as { code?: string })?.code;
+      setError(`No se pudo guardar.${codigo ? ` (${codigo})` : ''}`);
       setGuardando(false);
     }
   };
@@ -520,8 +522,14 @@ function FormularioAlta({ alCerrar }: { alCerrar: () => void }) {
       setNombre('');
       setTelefono('');
       setGuardando(false);
-    } catch {
-      setError('No se pudo guardar. Revisa tu conexión.');
+    } catch (e) {
+      console.error('[invitados] falló crearInvitado:', e);
+      const codigo = (e as { code?: string })?.code;
+      setError(
+        codigo === 'permission-denied'
+          ? 'Firestore rechazó el alta (permission-denied). Revisa las reglas y "owners".'
+          : `No se pudo guardar. Revisa tu conexión.${codigo ? ` (${codigo})` : ''}`,
+      );
       setGuardando(false);
     }
   };

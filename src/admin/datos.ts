@@ -132,7 +132,17 @@ export async function crearInvitadosEnLote(lista: NuevoInvitado[]): Promise<stri
       slugs.push(slug);
       lote.set(documento(slug), documentoNuevo(g));
     }
-    await lote.commit();
+    try {
+      await lote.commit();
+    } catch (e) {
+      console.error(
+        `[datos] lote.commit() falló en el trozo ${i}-${i + trozo.length}:`,
+        e,
+        '\nprimer documento del trozo:',
+        documentoNuevo(trozo[0]),
+      );
+      throw e;
+    }
   }
   return slugs;
 }

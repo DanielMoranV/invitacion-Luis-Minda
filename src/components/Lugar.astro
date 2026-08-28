@@ -53,6 +53,7 @@ const { lugar } = evento;
   {lugar.recepcion && (
     <div class="lugar__recepcion" data-reveal>
       <p class="lugar__recepcion-titulo">Recepción</p>
+      {lugar.recepcion.nombre && <p class="lugar__recepcion-nombre">{lugar.recepcion.nombre}</p>}
       <p class="lugar__recepcion-direccion">{lugar.recepcion.direccion ?? 'por confirmar'}</p>
       <a class="lugar__boton lugar__boton--secundario" href={lugar.recepcion.mapsUrl} target="_blank" rel="noopener noreferrer">
         Cómo llegar a la recepción
@@ -200,6 +201,13 @@ const { lugar } = evento;
     letter-spacing: .26em;
     text-transform: uppercase;
     color: var(--oro-sobre-foto);
+  }
+
+  .lugar__recepcion-nombre {
+    margin: 8px 0 0;
+    font-family: var(--display);
+    font-size: 18px;
+    color: var(--sobre-foto);
   }
 
   .lugar__recepcion-direccion {

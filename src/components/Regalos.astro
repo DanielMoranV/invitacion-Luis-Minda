@@ -1,0 +1,424 @@
+---
+import evento from '../content/evento.json';
+
+interface Props {
+  /** true en /i/<slug>; false en la portada genérica. */
+  personalizada?: boolean;
+}
+
+const { personalizada = false } = Astro.props;
+const cuentas = (evento as any).cuentasBancarias ?? {
+  novia: {
+    titular: 'Minda Loren',
+    banco: 'BCP Soles',
+    cuenta: '47503534419078',
+    cci: '00247510353441907825',
+  },
+  novio: {
+    titular: 'Luis Ángel',
+    banco: 'BCP Soles',
+    cuenta: '47572217761090',
+    cci: '00247517221776109022',
+  },
+};
+---
+
+<section class="regalos" data-seccion-regalos hidden={personalizada}>
+  <div class="regalos__contenedor" data-reveal>
+    <span class="rombo regalos__rombo" aria-hidden="true"></span>
+    <p class="eyebrow regalos__eyebrow">Presente</p>
+    <h2 class="regalos__titulo">Lluvia de sobres</h2>
+    <p class="regalos__texto">
+      Tu presencia es nuestro mejor regalo. Si deseas hacernos un presente mediante transferencia
+      bancaria, ponemos a tu disposición nuestras cuentas:
+    </p>
+
+    <div class="regalos__rejilla">
+      {/* Tarjeta Novia */}
+      <div class="regalos__tarjeta">
+        <div class="regalos__tarjeta-cabecera">
+          <span class="regalos__icono" aria-hidden="true">👰</span>
+          <div class="regalos__persona">
+            <h3 class="regalos__titular" data-novia-titular>{cuentas.novia.titular}</h3>
+            <span class="regalos__rol">Novia</span>
+          </div>
+        </div>
+
+        <div class="regalos__filas">
+          <div class="regalos__item">
+            <span class="regalos__etiqueta">Banco / Moneda</span>
+            <span class="regalos__banco" data-novia-banco>{cuentas.novia.banco}</span>
+          </div>
+
+          <div class="regalos__item regalos__item--copiable">
+            <div class="regalos__campo-info">
+              <span class="regalos__etiqueta">Número de cuenta</span>
+              <span class="regalos__numero" data-campo="novia-cuenta" data-valor={cuentas.novia.cuenta}>
+                {cuentas.novia.cuenta}
+              </span>
+            </div>
+            <button
+              type="button"
+              class="regalos__btn-copiar"
+              data-copiar-btn="novia-cuenta"
+              aria-label="Copiar número de cuenta de la novia"
+            >
+              <svg class="regalos__svg-copiar" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="regalos__btn-texto">Copiar</span>
+            </button>
+          </div>
+
+          <div class="regalos__item regalos__item--copiable">
+            <div class="regalos__campo-info">
+              <span class="regalos__etiqueta">Código Interbancario (CCI)</span>
+              <span class="regalos__numero" data-campo="novia-cci" data-valor={cuentas.novia.cci}>
+                {cuentas.novia.cci}
+              </span>
+            </div>
+            <button
+              type="button"
+              class="regalos__btn-copiar"
+              data-copiar-btn="novia-cci"
+              aria-label="Copiar CCI de la novia"
+            >
+              <svg class="regalos__svg-copiar" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="regalos__btn-texto">Copiar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Tarjeta Novio */}
+      <div class="regalos__tarjeta">
+        <div class="regalos__tarjeta-cabecera">
+          <span class="regalos__icono" aria-hidden="true">🤵</span>
+          <div class="regalos__persona">
+            <h3 class="regalos__titular" data-novio-titular>{cuentas.novio.titular}</h3>
+            <span class="regalos__rol">Novio</span>
+          </div>
+        </div>
+
+        <div class="regalos__filas">
+          <div class="regalos__item">
+            <span class="regalos__etiqueta">Banco / Moneda</span>
+            <span class="regalos__banco" data-novio-banco>{cuentas.novio.banco}</span>
+          </div>
+
+          <div class="regalos__item regalos__item--copiable">
+            <div class="regalos__campo-info">
+              <span class="regalos__etiqueta">Número de cuenta</span>
+              <span class="regalos__numero" data-campo="novio-cuenta" data-valor={cuentas.novio.cuenta}>
+                {cuentas.novio.cuenta}
+              </span>
+            </div>
+            <button
+              type="button"
+              class="regalos__btn-copiar"
+              data-copiar-btn="novio-cuenta"
+              aria-label="Copiar número de cuenta del novio"
+            >
+              <svg class="regalos__svg-copiar" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="regalos__btn-texto">Copiar</span>
+            </button>
+          </div>
+
+          <div class="regalos__item regalos__item--copiable">
+            <div class="regalos__campo-info">
+              <span class="regalos__etiqueta">Código Interbancario (CCI)</span>
+              <span class="regalos__numero" data-campo="novio-cci" data-valor={cuentas.novio.cci}>
+                {cuentas.novio.cci}
+              </span>
+            </div>
+            <button
+              type="button"
+              class="regalos__btn-copiar"
+              data-copiar-btn="novio-cci"
+              aria-label="Copiar CCI del novio"
+            >
+              <svg class="regalos__svg-copiar" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span class="regalos__btn-texto">Copiar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    // Función de copiado fácil al portapapeles con feedback visual
+    const copiarTexto = async (texto, boton) => {
+      try {
+        await navigator.clipboard.writeText(texto);
+        if (boton) {
+          const textoOriginal = boton.querySelector('.regalos__btn-texto');
+          const textoPrevio = textoOriginal ? textoOriginal.textContent : 'Copiar';
+          boton.classList.add('regalos__btn-copiar--exito');
+          if (textoOriginal) textoOriginal.textContent = '¡Copiado!';
+
+          setTimeout(() => {
+            boton.classList.remove('regalos__btn-copiar--exito');
+            if (textoOriginal) textoOriginal.textContent = textoPrevio;
+          }, 2000);
+        }
+      } catch (err) {
+        console.error('No se pudo copiar:', err);
+      }
+    };
+
+    // Asignar eventos de clic a los botones de copiar
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-copiar-btn]');
+      if (btn) {
+        const campoId = btn.getAttribute('data-copiar-btn');
+        const spanValor = document.querySelector(`[data-campo="${campoId}"]`);
+        const valor = spanValor?.getAttribute('data-valor') || spanValor?.textContent?.trim();
+        if (valor) copiarTexto(valor, btn);
+        return;
+      }
+
+      // También permite pulsar directamente sobre el número para copiarlo
+      const numSpan = e.target.closest('.regalos__numero');
+      if (numSpan) {
+        const valor = numSpan.getAttribute('data-valor') || numSpan.textContent?.trim();
+        const campoId = numSpan.getAttribute('data-campo');
+        const botonAsociado = document.querySelector(`[data-copiar-btn="${campoId}"]`);
+        if (valor) copiarTexto(valor, botonAsociado);
+      }
+    });
+
+    // Escuchar actualizaciones dinámicas si los novios cambiaron las cuentas en Firestore
+    document.addEventListener('cuentas:actualizadas', (e) => {
+      const c = e.detail;
+      if (!c) return;
+
+      const actualizar = (selector, attr, valor) => {
+        document.querySelectorAll(selector).forEach((el) => {
+          if (attr === 'text') el.textContent = valor;
+          else el.setAttribute(attr, valor);
+        });
+      };
+
+      if (c.novia) {
+        if (c.novia.titular) actualizar('[data-novia-titular]', 'text', c.novia.titular);
+        if (c.novia.banco) actualizar('[data-novia-banco]', 'text', c.novia.banco);
+        if (c.novia.cuenta) {
+          actualizar('[data-campo="novia-cuenta"]', 'text', c.novia.cuenta);
+          actualizar('[data-campo="novia-cuenta"]', 'data-valor', c.novia.cuenta);
+        }
+        if (c.novia.cci) {
+          actualizar('[data-campo="novia-cci"]', 'text', c.novia.cci);
+          actualizar('[data-campo="novia-cci"]', 'data-valor', c.novia.cci);
+        }
+      }
+
+      if (c.novio) {
+        if (c.novio.titular) actualizar('[data-novio-titular]', 'text', c.novio.titular);
+        if (c.novio.banco) actualizar('[data-novio-banco]', 'text', c.novio.banco);
+        if (c.novio.cuenta) {
+          actualizar('[data-campo="novio-cuenta"]', 'text', c.novio.cuenta);
+          actualizar('[data-campo="novio-cuenta"]', 'data-valor', c.novio.cuenta);
+        }
+        if (c.novio.cci) {
+          actualizar('[data-campo="novio-cci"]', 'text', c.novio.cci);
+          actualizar('[data-campo="novio-cci"]', 'data-valor', c.novio.cci);
+        }
+      }
+    });
+  })();
+</script>
+
+<style>
+  .regalos {
+    padding: 60px 24px;
+    background: var(--crema-alt);
+    text-align: center;
+  }
+  .regalos[hidden] {
+    display: none !important;
+  }
+
+  .regalos__contenedor {
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .regalos__rombo {
+    margin: 0 auto 16px;
+    width: 7px;
+    height: 7px;
+    background: var(--oro);
+    transform: rotate(45deg);
+    display: block;
+  }
+
+  .regalos__eyebrow {
+    margin-bottom: 6px;
+    letter-spacing: .24em;
+    color: var(--tinta-tenue);
+  }
+
+  .regalos__titulo {
+    margin: 0 0 14px;
+    font-family: var(--script);
+    font-weight: 400;
+    font-size: 38px;
+    color: var(--verde-titulo);
+    line-height: 1.1;
+  }
+
+  .regalos__texto {
+    margin: 0 auto 28px;
+    max-width: 32ch;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--tinta-media);
+  }
+
+  .regalos__rejilla {
+    display: grid;
+    gap: 18px;
+  }
+
+  .regalos__tarjeta {
+    background: var(--crema-panel);
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    padding: 20px 18px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(27, 37, 64, 0.04);
+  }
+
+  .regalos__tarjeta-cabecera {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--linea);
+  }
+
+  .regalos__icono {
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  .regalos__titular {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--tinta);
+  }
+
+  .regalos__rol {
+    font-size: 12px;
+    color: var(--oro-oscuro);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .regalos__filas {
+    display: grid;
+    gap: 12px;
+  }
+
+  .regalos__item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .regalos__item--copiable {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #ffffff;
+    border: 1px solid var(--linea);
+    border-radius: 8px;
+  }
+
+  .regalos__campo-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .regalos__etiqueta {
+    font-size: 11px;
+    color: var(--tinta-tenue);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  .regalos__banco {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--tinta);
+    margin-top: 1px;
+  }
+
+  .regalos__numero {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--tinta);
+    letter-spacing: .03em;
+    cursor: copy;
+    overflow-wrap: anywhere;
+  }
+  .regalos__numero:hover {
+    color: var(--oro);
+  }
+
+  .regalos__btn-copiar {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    background: var(--crema-alt);
+    border: 1px solid var(--linea-campo);
+    border-radius: 6px;
+    color: var(--tinta-media);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .2s ease;
+    flex-shrink: 0;
+  }
+
+  .regalos__btn-copiar:hover {
+    background: var(--activo-fondo);
+    border-color: var(--oro);
+    color: var(--oro-oscuro);
+  }
+
+  .regalos__btn-copiar--exito {
+    background: #e4efe5 !important;
+    border-color: #38763c !important;
+    color: #38763c !important;
+  }
+
+  .regalos__svg-copiar {
+    flex-shrink: 0;
+  }
+</style>

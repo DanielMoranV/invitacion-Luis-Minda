@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import {
   escucharInvitados, crearInvitado, editarInvitado, borrarInvitado,
   marcarEnviado, desmarcarEnviado, confirmarAMano, volverAPendiente,
-  avisoAlGuardar, PASES_POR_DEFECTO,
-  type Invitado, type Estado,
+  escucharCuentas, guardarCuentas, alternarRegaloInvitado, debeIncluirCuentas,
+  avisoAlGuardar, PASES_POR_DEFECTO, CUENTAS_POR_DEFECTO,
+  type Invitado, type Estado, type CuentasBancarias,
 } from './datos';
 import { Importar } from './Importar';
+import { ConfigurarCuentas } from './ConfigurarCuentas';
 
 const ESTADOS: Record<Estado, string> = {
   pendiente: 'Pendiente',
@@ -22,15 +24,22 @@ const fechaCorta = (d: Date | null) =>
   d ? d.toLocaleDateString('es-PE', { day: 'numeric', month: 'short' }) : '';
 
 function enlaceDe(slug: string) {
-  return `${location.origin}/i/${slug}`;
+  const base =
+    typeof location !== 'undefined' && !location.hostname.includes('localhost') && !location.hostname.includes('127.0.0.1')
+      ? location.origin
+      : 'https://luisyminda.web.app';
+  return `${base}/i/${slug}`;
 }
 
 function mensajeWhatsApp(inv: Invitado) {
   return (
-    `¡Hola! 🤍\n\n` +
-    `Luis Ángel y Minda Loren te invitan a su boda el sábado 30 de enero de 2027.\n\n` +
-    `Aquí está tu invitación:\n${enlaceDe(inv.slug)}\n\n` +
-    `Te pedimos confirmar antes del 30 de diciembre. ¡Nos encantará verte!`
+    `*${inv.nombre.trim()}* ✨\n\n` +
+    `Tenemos el agrado de invitarte a nuestra boda 💒. Estaremos muy felices de que nos acompañes en este día tan especial.\n\n` +
+    `💌 *Tu invitación virtual:*\n` +
+    `${enlaceDe(inv.slug)}\n\n` +
+    `Por favor, confirma tu asistencia en el enlace antes del 30 de diciembre de 2026.\n\n` +
+    `Con mucho cariño,\n` +
+    `*Luis Ángel & Minda Loren*`
   );
 }
 
@@ -38,6 +47,7 @@ export function Invitados() {
   const [lista, setLista] = useState<Invitado[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
+  const [cuentas, setCuentas] = useState<CuentasBancarias>(CUENTAS_POR_DEFECTO);
 
   const [busqueda, setBusqueda] = useState('');
   const [filtroEstado, setFiltroEstado] = useState<'todos' | Estado>('todos');
@@ -47,22 +57,28 @@ export function Invitados() {
   const [gruposAbiertos, setGruposAbiertos] = useState<Set<string>>(new Set());
   const [mostrarAlta, setMostrarAlta] = useState(false);
   const [mostrarImportar, setMostrarImportar] = useState(false);
+  const [mostrarCuentas, setMostrarCuentas] = useState(false);
 
-  useEffect(
-    () =>
-      escucharInvitados(
-        (l) => { setLista(l); setCargando(false); setError(''); },
-        (e) => {
-          setCargando(false);
-          setError(
-            e.message.includes('permission')
-              ? 'Tu cuenta no tiene acceso a esta lista. Falta añadir tu usuario a "owners".'
-              : 'No pudimos cargar la lista. Revisa tu conexión.',
-          );
-        },
-      ),
-    [],
-  );
+  useEffect(() => {
+    const cancelarInvitados = escucharInvitados(
+      (l) => { setLista(l); setCargando(false); setError(''); },
+      (e) => {
+        setCargando(false);
+        setError(
+          e.message.includes('permission')
+            ? 'Tu cuenta no tiene acceso a esta lista. Falta añadir tu usuario a "owners".'
+            : 'No pudimos cargar la lista. Revisa tu conexión.',
+        );
+      },
+    );
+    const cancelarCuentas = escucharCuentas(
+      (c) => setCuentas(c),
+    );
+    return () => {
+      cancelarInvitados();
+      cancelarCuentas();
+    };
+  }, []);
 
   const grupos = useMemo(() => {
     const nombrados = [...new Set(lista.map((i) => i.grupo).filter(Boolean))].sort() as string[];
@@ -180,18 +196,32 @@ export function Invitados() {
             {gruposAbiertos.size === porGrupo.length ? 'Colapsar todo' : 'Expandir todo'}
           </button>
         )}
-        <button class="btn" onClick={() => { setMostrarImportar(true); setMostrarAlta(false); }}>
+        <button
+          class="btn"
+          onClick={() => { setMostrarCuentas(true); setMostrarAlta(false); setMostrarImportar(false); }}
+        >
+          💳 Cuentas bancarias
+        </button>
+        <button class="btn" onClick={() => { setMostrarImportar(true); setMostrarAlta(false); setMostrarCuentas(false); }}>
           Importar lista
         </button>
         <button
           class="btn btn--principal"
-          onClick={() => { setMostrarAlta(true); setMostrarImportar(false); }}
+          onClick={() => { setMostrarAlta(true); setMostrarImportar(false); setMostrarCuentas(false); }}
         >
           + Añadir
         </button>
       </div>
 
-      {mostrarAlta && <FormularioAlta alCerrar={() => setMostrarAlta(false)} />}
+      {mostrarCuentas && (
+        <ConfigurarCuentas
+          cuentas={cuentas}
+          grupos={grupos}
+          alCerrar={() => setMostrarCuentas(false)}
+          alGuardar={guardarCuentas}
+        />
+      )}
+      {mostrarAlta && <FormularioAlta cuentas={cuentas} alCerrar={() => setMostrarAlta(false)} />}
       {mostrarImportar && (
         <Importar existentes={lista} alCerrar={() => setMostrarImportar(false)} />
       )}
@@ -250,6 +280,7 @@ export function Invitados() {
                           inv={inv}
                           abierto={filaAbierta === inv.slug}
                           alAlternar={() => setFilaAbierta(filaAbierta === inv.slug ? null : inv.slug)}
+                          cuentas={cuentas}
                         />
                       ))}
                     </ul>
@@ -274,8 +305,8 @@ function Cifra({ valor, etiqueta, tono }: { valor: number; etiqueta: string; ton
 }
 
 function Fila({
-  inv, abierto, alAlternar,
-}: { inv: Invitado; abierto: boolean; alAlternar: () => void }) {
+  inv, abierto, alAlternar, cuentas,
+}: { inv: Invitado; abierto: boolean; alAlternar: () => void; cuentas: CuentasBancarias }) {
   const [copiado, setCopiado] = useState(false);
   const [editando, setEditando] = useState(false);
   const [ocupado, setOcupado] = useState(false);
@@ -284,6 +315,25 @@ function Fila({
   const [confirmando, setConfirmando] = useState(false);
   const [cuantos, setCuantos] = useState(String(inv.pases));
   const [borrando, setBorrando] = useState(false);
+
+  const [conCuentasLocal, setConCuentasLocal] = useState<boolean | null>(inv.conRegalo);
+
+  useEffect(() => {
+    setConCuentasLocal(inv.conRegalo);
+  }, [inv.conRegalo]);
+
+  const conCuentasEfectivo = typeof conCuentasLocal === 'boolean'
+    ? conCuentasLocal
+    : (inv.grupo ? cuentas.gruposHabilitados.includes(inv.grupo) : false);
+
+  const alternarCuentasInvitado = async (nuevoValor: boolean) => {
+    setConCuentasLocal(nuevoValor);
+    try {
+      await alternarRegaloInvitado(inv.slug, nuevoValor);
+    } catch {
+      setConCuentasLocal(inv.conRegalo);
+    }
+  };
 
   const copiar = async () => {
     try {
@@ -298,7 +348,10 @@ function Fila({
   const enviar = async () => {
     // Se abre WhatsApp y se marca. No hay forma de saber si llegó a enviarse:
     // por eso existe "Desmarcar".
-    const tel = (inv.telefono ?? '').replace(/[^\d]/g, '');
+    let tel = (inv.telefono ?? '').replace(/[^\d]/g, '');
+    if (tel.length === 9 && tel.startsWith('9')) {
+      tel = `51${tel}`;
+    }
     const url = tel
       ? `https://wa.me/${tel}?text=${encodeURIComponent(mensajeWhatsApp(inv))}`
       : `https://wa.me/?text=${encodeURIComponent(mensajeWhatsApp(inv))}`;
@@ -324,6 +377,11 @@ function Fila({
         </span>
         <span class="fila__meta">
           {inv.grupo && <span class="fila__grupo">{inv.grupo}</span>}
+          {conCuentasEfectivo && (
+            <span class="fila__grupo" style="color: var(--acento); font-weight: 500;" title="Verá la sección de cuentas bancarias en su invitación web">
+              🎁 cuentas web
+            </span>
+          )}
           <span class="fila__pases">{inv.pases === 1 ? '1 pase' : `${inv.pases} pases`}</span>
           {inv.estado === 'confirmado' && (
             <span class="fila__asistentes">
@@ -347,8 +405,19 @@ function Fila({
           )}
           <p class="fila__enlace">{enlaceDe(inv.slug)}</p>
 
+          <div style="margin: 2px 0 4px;">
+            <label class="controles__casilla" style="display: inline-flex; align-items: center; gap: 7px; font-size: 13px;">
+              <input
+                type="checkbox"
+                checked={conCuentasEfectivo}
+                onChange={(e) => alternarCuentasInvitado((e.target as HTMLInputElement).checked)}
+              />
+              <span>Mostrar cuentas bancarias para regalo en su invitación web 🎁</span>
+            </label>
+          </div>
+
           {editando ? (
-            <FormularioEdicion inv={inv} alCerrar={() => setEditando(false)} />
+            <FormularioEdicion inv={inv} cuentas={cuentas} alCerrar={() => setEditando(false)} />
           ) : confirmando ? (
             <div class="fila__enlinea">
               <span class="fila__enlinea-texto">
@@ -399,9 +468,22 @@ function Fila({
               <button class="btn btn--pequeno" onClick={copiar}>
                 {copiado ? '✓ Copiado' : 'Copiar enlace'}
               </button>
-              <button class="btn btn--pequeno" onClick={enviar}>
+              <button
+                class="btn btn--pequeno"
+                onClick={enviar}
+              >
                 {inv.envios > 0 ? 'Reenviar' : 'Enviar'} por WhatsApp
               </button>
+              {inv.envios > 0 && (
+                <button
+                  class="btn btn--pequeno btn--fantasma"
+                  disabled={ocupado}
+                  onClick={() => conBloqueo(() => desmarcarEnviado(inv.slug))}
+                >
+                  Desmarcar envío
+                </button>
+              )}
+              <button class="btn btn--pequeno" onClick={() => setEditando(true)}>Editar</button>
               {inv.envios > 0 && (
                 <button
                   class="btn btn--pequeno btn--fantasma"
@@ -447,11 +529,18 @@ function Fila({
   );
 }
 
-function FormularioEdicion({ inv, alCerrar }: { inv: Invitado; alCerrar: () => void }) {
+function FormularioEdicion({
+  inv, cuentas, alCerrar,
+}: { inv: Invitado; cuentas: CuentasBancarias; alCerrar: () => void }) {
   const [nombre, setNombre] = useState(inv.nombre);
   const [grupo, setGrupo] = useState(inv.grupo ?? '');
   const [telefono, setTelefono] = useState(inv.telefono ?? '');
   const [pases, setPases] = useState(String(inv.pases));
+  const [conRegalo, setConRegalo] = useState(
+    typeof inv.conRegalo === 'boolean'
+      ? inv.conRegalo
+      : (inv.grupo ? cuentas.gruposHabilitados.includes(inv.grupo) : false),
+  );
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
 
@@ -467,6 +556,7 @@ function FormularioEdicion({ inv, alCerrar }: { inv: Invitado; alCerrar: () => v
         grupo: grupo.trim() || null,
         telefono: telefono.trim() || null,
         pases: n,
+        conRegalo,
       });
       alCerrar();
     } catch (e) {
@@ -482,6 +572,7 @@ function FormularioEdicion({ inv, alCerrar }: { inv: Invitado; alCerrar: () => v
         grupo={grupo} setGrupo={setGrupo}
         telefono={telefono} setTelefono={setTelefono}
         pases={pases} setPases={setPases}
+        conRegalo={conRegalo} setConRegalo={setConRegalo}
       />
       {error && <p class="campo__error">{error}</p>}
       <div class="alta__botones">
@@ -494,14 +585,22 @@ function FormularioEdicion({ inv, alCerrar }: { inv: Invitado; alCerrar: () => v
   );
 }
 
-function FormularioAlta({ alCerrar }: { alCerrar: () => void }) {
+function FormularioAlta({ cuentas, alCerrar }: { cuentas: CuentasBancarias; alCerrar: () => void }) {
   const [nombre, setNombre] = useState('');
   const [grupo, setGrupo] = useState('');
   const [telefono, setTelefono] = useState('');
   const [pases, setPases] = useState(String(PASES_POR_DEFECTO));
+  const [conRegalo, setConRegalo] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
   const [ultimo, setUltimo] = useState('');
+
+  const alCambiarGrupo = (g: string) => {
+    setGrupo(g);
+    if (g.trim() && cuentas.gruposHabilitados.includes(g.trim())) {
+      setConRegalo(true);
+    }
+  };
 
   const guardar = async (e: Event) => {
     e.preventDefault();
@@ -514,6 +613,7 @@ function FormularioAlta({ alCerrar }: { alCerrar: () => void }) {
         grupo: grupo.trim() || null,
         telefono: telefono.trim() || null,
         pases: Math.min(Math.max(parseInt(pases, 10) || 1, 1), 20),
+        conRegalo,
       });
       // Se queda abierto: normalmente se añaden varios seguidos.
       setUltimo(nombre.trim());
@@ -531,9 +631,10 @@ function FormularioAlta({ alCerrar }: { alCerrar: () => void }) {
       <form class="alta" onSubmit={guardar}>
         <Campos
           nombre={nombre} setNombre={setNombre}
-            grupo={grupo} setGrupo={setGrupo}
+          grupo={grupo} setGrupo={alCambiarGrupo}
           telefono={telefono} setTelefono={setTelefono}
           pases={pases} setPases={setPases}
+          conRegalo={conRegalo} setConRegalo={setConRegalo}
           autoFoco
         />
         {ultimo && !error && (
@@ -595,6 +696,19 @@ function Campos(p: any) {
           value={p.pases}
           onInput={(e: any) => p.setPases(e.target.value)}
         />
+      </label>
+      <label
+        class="campo"
+        style="grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; gap: 8px; cursor: pointer; margin-top: 4px;"
+      >
+        <input
+          type="checkbox"
+          checked={p.conRegalo}
+          onChange={(e: any) => p.setConRegalo(e.target.checked)}
+        />
+        <span class="campo__etiqueta" style="margin: 0; font-size: 13px; font-weight: normal; color: var(--texto);">
+          Mostrar cuentas bancarias para regalo en su invitación web 🎁
+        </span>
       </label>
     </div>
   );

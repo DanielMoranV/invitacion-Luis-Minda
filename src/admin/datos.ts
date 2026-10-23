@@ -10,6 +10,35 @@ export type Estado = 'pendiente' | 'confirmado' | 'declinado';
 /** Tope de pases por defecto cuando el invitado no trae uno propio. */
 export const PASES_POR_DEFECTO = evento.invitadoPorDefecto.pases;
 
+export interface CuentaBancaria {
+  titular: string;
+  banco: string;
+  cuenta: string;
+  cci: string;
+}
+
+export interface CuentasBancarias {
+  novia: CuentaBancaria;
+  novio: CuentaBancaria;
+  gruposHabilitados: string[];
+}
+
+export const CUENTAS_POR_DEFECTO: CuentasBancarias = (evento as any).cuentasBancarias ?? {
+  novia: {
+    titular: 'Minda Loren',
+    banco: 'BCP Soles',
+    cuenta: '47503534419078',
+    cci: '00247510353441907825',
+  },
+  novio: {
+    titular: 'Luis Ángel',
+    banco: 'BCP Soles',
+    cuenta: '47572217761090',
+    cci: '00247517221776109022',
+  },
+  gruposHabilitados: [],
+};
+
 export interface Invitado {
   slug: string;
   nombre: string;
@@ -23,6 +52,7 @@ export interface Invitado {
   confirmadoEn: Date | null;
   enviadoEn: Date | null;
   envios: number;
+  conRegalo: boolean | null;
 }
 
 export interface NuevoInvitado {
@@ -30,6 +60,7 @@ export interface NuevoInvitado {
   grupo?: string | null;
   telefono?: string | null;
   pases?: number;
+  conRegalo?: boolean | null;
 }
 
 /** Deja el número de pases dentro del rango que aceptan las reglas de Firestore. */
@@ -55,6 +86,7 @@ function aInvitado(id: string, d: Record<string, any>): Invitado {
     enviadoEn: fecha(d.enviadoEn),
     // Los documentos creados antes de existir el campo no lo tienen.
     envios: Number(d.envios ?? 0),
+    conRegalo: typeof d.conRegalo === 'boolean' ? d.conRegalo : null,
   };
 }
 
@@ -87,7 +119,7 @@ export function generarSlug(nombre: string): string {
 }
 
 function documentoNuevo(g: NuevoInvitado) {
-  return {
+  const doc: Record<string, any> = {
     nombre: g.nombre.trim().slice(0, 120),
     grupo: g.grupo?.trim() || null,
     telefono: g.telefono?.trim() || null,
@@ -98,6 +130,10 @@ function documentoNuevo(g: NuevoInvitado) {
     envios: 0,
     creadoEn: serverTimestamp(),
   };
+  if (typeof g.conRegalo === 'boolean') {
+    doc.conRegalo = g.conRegalo;
+  }
+  return doc;
 }
 
 /**
@@ -159,7 +195,7 @@ export function avisoAlGuardar(e: unknown): string {
 
 export async function editarInvitado(
   slug: string,
-  cambios: Partial<Pick<Invitado, 'nombre' | 'grupo' | 'telefono' | 'pases'>>,
+  cambios: Partial<Pick<Invitado, 'nombre' | 'grupo' | 'telefono' | 'pases' | 'conRegalo'>>,
 ) {
   await updateDoc(documento(slug), cambios);
 }
@@ -196,4 +232,56 @@ export async function volverAPendiente(slug: string) {
     asistentes: null,
     confirmadoEn: null,
   });
+}
+
+const docBoda = () => doc(obtenerDb(), 'bodas', BODA_ID);
+
+/** Escucha en tiempo real la configuración de cuentas bancarias de la boda. */
+export function escucharCuentas(
+  alActualizar: (c: CuentasBancarias) => void,
+  alFallar?: (e: Error) => void,
+) {
+  return onSnapshot(
+    docBoda(),
+    (snap) => {
+      const data = snap.data();
+      if (data?.cuentasBancarias) {
+        alActualizar({
+          novia: { ...CUENTAS_POR_DEFECTO.novia, ...(data.cuentasBancarias.novia ?? {}) },
+          novio: { ...CUENTAS_POR_DEFECTO.novio, ...(data.cuentasBancarias.novio ?? {}) },
+          gruposHabilitados: Array.isArray(data.cuentasBancarias.gruposHabilitados)
+            ? data.cuentasBancarias.gruposHabilitados
+            : CUENTAS_POR_DEFECTO.gruposHabilitados,
+        });
+      } else {
+        alActualizar(CUENTAS_POR_DEFECTO);
+      }
+    },
+    (e) => {
+      console.error('Error al cargar cuentas:', e);
+      if (alFallar) alFallar(e);
+    },
+  );
+}
+
+/** Guarda la configuración de cuentas bancarias y grupos habilitados en Firestore. */
+export async function guardarCuentas(cuentas: CuentasBancarias) {
+  await setDoc(docBoda(), { cuentasBancarias: cuentas }, { merge: true });
+  try {
+    await setDoc(doc(obtenerDb(), 'bodas', BODA_ID, 'config', 'cuentas'), cuentas, { merge: true });
+  } catch (err) {
+    console.error('Error al guardar en config/cuentas:', err);
+  }
+}
+
+/** Activa o desactiva individualmente las cuentas para un invitado. */
+export async function alternarRegaloInvitado(slug: string, conRegalo: boolean) {
+  await updateDoc(documento(slug), { conRegalo });
+}
+
+/** Determina si a un invitado le corresponde recibir las cuentas en su mensaje. */
+export function debeIncluirCuentas(inv: Invitado, cuentas: CuentasBancarias): boolean {
+  if (typeof inv.conRegalo === 'boolean') return inv.conRegalo;
+  if (inv.grupo && cuentas.gruposHabilitados.includes(inv.grupo)) return true;
+  return false;
 }

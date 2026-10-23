@@ -13,10 +13,12 @@ const config = {
   emulador: import.meta.env.PUBLIC_FIRESTORE_EMULATOR ?? '',
   pasesPorDefecto: evento.invitadoPorDefecto.pases,
 };
+const cuentasBancarias = (evento as any).cuentasBancarias ?? null;
 ---
 
-<script is:inline define:vars={{ config }}>
+<script is:inline define:vars={{ config, cuentasBancarias }}>
   window.__CONFIG_FIRESTORE = config;
+  window.__CONFIG_CUENTAS = cuentasBancarias;
 </script>
 <script is:inline src="/firestore-cliente.js"></script>
 
@@ -44,6 +46,25 @@ const config = {
       }
 
       window.__invitado = invitado;
+
+      // Evalúa si corresponde mostrar la sección de regalos/cuentas:
+      const gruposHabilitados = window.__CONFIG_CUENTAS?.gruposHabilitados || [];
+      const mostrarRegalos = typeof invitado.conRegalo === 'boolean'
+        ? invitado.conRegalo
+        : (invitado.grupo ? gruposHabilitados.includes(invitado.grupo) : false);
+
+      if (mostrarRegalos) {
+        document.querySelectorAll('[data-seccion-regalos]').forEach((el) => {
+          el.hidden = false;
+        });
+
+        // Si los novios modificaron las cuentas en Firestore, refresca los datos:
+        if (window.__firestore?.obtenerCuentas) {
+          window.__firestore.obtenerCuentas().then((c) => {
+            if (c) avisar('cuentas:actualizadas', c);
+          });
+        }
+      }
 
       const etiqueta = invitado.pases === 1
         ? `${invitado.nombre} · 1 pase`

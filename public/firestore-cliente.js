@@ -46,11 +46,44 @@
     return {
       slug,
       nombre: String(c.nombre ?? ''),
+      grupo: c.grupo ?? null,
       estado: c.estado ?? 'pendiente',
       asistentes: c.asistentes,
+      conRegalo: typeof c.conRegalo === 'boolean' ? c.conRegalo : null,
       // Documentos creados antes de que existiera este campo no lo tienen.
       pases: Number(c.pases ?? cfg.pasesPorDefecto ?? 4),
     };
+  }
+
+  /** Lee la configuración pública de cuentas bancarias. */
+  async function obtenerCuentas() {
+    const url = `${raiz}/projects/${cfg.projectId}/databases/(default)/documents/bodas/${cfg.bodaId}/config/cuentas${clave ? '?' + clave : ''}`;
+    try {
+      const r = await fetch(url, { headers: { accept: 'application/json' } });
+      if (!r.ok) return null;
+      const d = await r.json();
+      const campos = d.fields || {};
+      const novia = campos.novia?.mapValue?.fields || {};
+      const novio = campos.novio?.mapValue?.fields || {};
+      const grupos = campos.gruposHabilitados?.arrayValue?.values || [];
+      return {
+        novia: {
+          titular: desdeValor(novia.titular) || 'Minda Loren',
+          banco: desdeValor(novia.banco) || 'BCP Soles',
+          cuenta: desdeValor(novia.cuenta) || '',
+          cci: desdeValor(novia.cci) || '',
+        },
+        novio: {
+          titular: desdeValor(novio.titular) || 'Luis Ángel',
+          banco: desdeValor(novio.banco) || 'BCP Soles',
+          cuenta: desdeValor(novio.cuenta) || '',
+          cci: desdeValor(novio.cci) || '',
+        },
+        gruposHabilitados: grupos.map(desdeValor).filter(Boolean),
+      };
+    } catch {
+      return null;
+    }
   }
 
   /**
@@ -93,5 +126,5 @@
     return { ok: true };
   }
 
-  window.__firestore = { obtenerInvitado, guardarRsvp };
+  window.__firestore = { obtenerInvitado, guardarRsvp, obtenerCuentas };
 })();

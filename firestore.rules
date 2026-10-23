@@ -15,6 +15,11 @@ service cloud.firestore {
       // así que cerrar esto no rompe la comprobación de dueño.
       allow get, list, write: if esDuenio(boda);
 
+      match /config/{documento} {
+        allow get: if true;
+        allow write: if esDuenio(boda);
+      }
+
       match /invitados/{invitado} {
         allow get: if true;
         allow list: if esDuenio(boda);
@@ -26,8 +31,10 @@ service cloud.firestore {
           // Lista cerrada: nada de campos inventados desde el navegador.
           && request.resource.data.keys().hasOnly([
                'nombre','grupo','telefono','estado','asistentes','pases',
-               'enviadoEn','envios','creadoEn'
+               'enviadoEn','envios','creadoEn','conRegalo'
              ])
+          && (!('conRegalo' in request.resource.data)
+              || request.resource.data.conRegalo is bool)
           && request.resource.data.nombre is string
           && request.resource.data.nombre.size() > 0
           && request.resource.data.nombre.size() <= 120

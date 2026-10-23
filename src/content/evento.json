@@ -127,5 +127,20 @@
   "config": {
     "regalos": "oculto",
     "niños": true
+  },
+  "cuentasBancarias": {
+    "novia": {
+      "titular": "Minda Loren",
+      "banco": "BCP Soles",
+      "cuenta": "47503534419078",
+      "cci": "00247510353441907825"
+    },
+    "novio": {
+      "titular": "Luis Ángel",
+      "banco": "BCP Soles",
+      "cuenta": "47572217761090",
+      "cci": "00247517221776109022"
+    },
+    "gruposHabilitados": []
   }
 }
